@@ -20,7 +20,14 @@ All times America/Buenos_Aires (UTC-3).
 - Collaboration: Katherine builds together with her partner Luciano (GitHub: luloxi) using Arc Studio's GitHub integration, the way Arc Studio supports teamwork. Public repo https://github.com/kathonejo/autentika with luloxi as collaborator; Arc Studio pushes the code there and both work from the repo. We would have loved to also share the same Arc Studio project directly.
 - Arc Studio result (08:58 ART): Arc Studio's agent wrote AutentikaV2.sol (milestones, platform fee, ERC-721 certificate, ERC-2981 royalties, resale marketplace, legalization), ran its own security review (1 Critical, 2 High, 1 Medium fixed; Slither clean of real issues), 132/132 Foundry tests passing incl. fuzz, and deployed to Arc Testnet: 0xfa64333dc831d267b71fb12e31e49d5488ef770a (tx 0x0ebdab1bd1290449f2916e853bb6102072ab6fbf6a5d0b764a077c2e77bc805b). Screenshots 10–15.
 - App UI in Arc Studio (~09:15 ART, prompt prompts/02-app-ui-v2.txt, Build mode): Arc Studio's agent updated the app to use every V2 feature while keeping the visual style: mobile hamburger menu, As artist / As collector tabs, physical/digital toggle with shipping fields, milestones and royalty %, photo upload with automatic SHA-256, milestone progress bar, NFT certificate with resale (list/cancel/buy + price split), Legalize panel + "What is legalization?" page, owner-only Admin, Arc Testnet + Arc Mainnet support. 16 files edited, lint + typecheck 0 errors. Screenshots 20–24.
+- Code to GitHub (~09:35 ART): downloaded the code from Arc Studio (Download Code) and pushed it to https://github.com/kathonejo/autentika (commit 017f1c6), together with this build log, the prompts and the screenshots in /demo. Secrets (.env) excluded. Luciano (luloxi) collaborates from the repo.
 
 ## Feedback for Arc Studio
 - Collaborative projects (invite a teammate to the same Arc Studio project and thread) would help couples/teams of artists and builders.
 - A mainnet deploy path (or a guided "export & deploy with your wallet") inside Arc Studio.
+
+## 2026-11-01 — Mainnet deploy path + live Arc Studio app
+- Verified Arc Studio AutentikaV2: forge build + tests pass; constructor `(USDC, owner, feeRecipient)` allows owner==feeRecipient (only rejects zero).
+- SE-2 `/admin` now deploys Arc Studio bytecode with args `(USDC, her wallet, her wallet)`. Live: https://autentika-tawny.vercel.app/admin
+- Live Arc Studio app published: https://autentika-app.vercel.app (mainnet address env `VITE_AUTENTIKA_MAINNET_ADDRESS` empty until she deploys; did not point at older 0xc84b…).
+- Repo commit: `mainnet config` on kathonejo/autentika.
