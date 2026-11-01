@@ -14,12 +14,14 @@ export function isSupportedChain(id: number): id is SupportedChainId {
 }
 
 // ─── Per-network contract addresses ─────────────────────────────────────────
-// AutentikaV2 is deployed on Arc Testnet. Mainnet address from VITE_AUTENTIKA_MAINNET_ADDRESS
-// after Katherine deploys from /admin (do not point at the older non-Arc-Studio V2).
-function readMainnetAddress(): `0x${string}` | null {
+// AutentikaV2 (Arc Studio build) on Arc Testnet + Arc Mainnet.
+// Mainnet: deployed 2026-11-01 by Katherine via /admin (Rabby). Env can override.
+// Do not point at the older pre-Arc-Studio V2 (0xc84b92fd…4426).
+const MAINNET_DEPLOYED: `0x${string}` = '0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4'
+function readMainnetAddress(): `0x${string}` {
   const raw = (import.meta.env.VITE_AUTENTIKA_MAINNET_ADDRESS as string | undefined)?.trim() || ''
   if (/^0x[0-9a-fA-F]{40}$/.test(raw)) return raw as `0x${string}`
-  return null
+  return MAINNET_DEPLOYED
 }
 
 const CONTRACT_ADDRESSES: Record<SupportedChainId, `0x${string}` | null> = {

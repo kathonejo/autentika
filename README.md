@@ -1,6 +1,6 @@
 # Autentika
 
-Commissions and certificates of authenticity for artists, paid in USDC. Artists create commissions, collectors fund them on Arc Testnet. Delivery triggers a Certificate of Authenticity recorded permanently onchain with artwork photo, technique, dimensions, care instructions, artist signature, and content hash. Certificates can be transferred to track resale provenance.
+Commissions and certificates of authenticity for artists, paid in USDC. Artists create commissions, collectors fund them in USDC on Arc Mainnet (and Arc Testnet). Delivery triggers a Certificate of Authenticity recorded permanently onchain with artwork photo, technique, dimensions, care instructions, artist signature, and content hash. Certificates can be transferred to track resale provenance.
 
 Built with [Arc Studio](https://studio.arc.io)
 
@@ -13,7 +13,7 @@ Print-studio / screen-print aesthetic with Kathonejo's brand palette: primary bl
 - **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, Space Grotesk + DM Sans
 - **Web3**: wagmi v2, viem, ConnectKit
 - **Smart Contract**: Solidity 0.8.28, Foundry, OpenZeppelin 5.6.1 (SafeERC20, ReentrancyGuard), `via_ir = true`
-- **Chain**: Arc Testnet (Chain ID: 5042002)
+- **Chain**: Arc Mainnet (Chain ID: 5042) and Arc Testnet (Chain ID: 5042002)
 - **Token**: USDC (6 decimals, pinned at deploy time)
 - **i18n**: EN / ES toggle (in-memory, no library)
 - **PDF**: jsPDF (landscape Certificate of Authenticity download)
@@ -22,17 +22,25 @@ Print-studio / screen-print aesthetic with Kathonejo's brand palette: primary bl
 
 | Contract | Chain | Address |
 |---|---|---|
-| KathonejoCommissions v2 (current) | Arc Testnet | `0xf1042573fbffccc48a6a5692a805b02be166db3b` |
-| KathonejoCommissions v1 (deprecated) | Arc Testnet | `0x6a5c12d2b55523ef1d6bd47b3bd1d471c65f5831` |
+| AutentikaV2 (Arc Studio, current) | Arc Mainnet | `0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4` |
+| AutentikaV2 (Arc Studio) | Arc Testnet | `0xfa64333dc831d267b71fb12e31e49d5488ef770a` |
+| AutentikaV2 (older, backup only) | Arc Mainnet | `0xc84b92fd9cdc89c8609774dcfcc8ca9543114426` |
+| KathonejoCommissions v1 (legacy) | Arc Mainnet | `0xAb795B29BA82BF7ac1EF0dF1390aFBD801b258e9` |
 
-Explorer: https://explorer.testnet.arc.io/address/0xf1042573fbffccc48a6a5692a805b02be166db3b
+Mainnet explorer: https://explorer.arc.io/address/0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4  
+Mainnet deploy tx: https://explorer.arc.io/tx/0xe7aa5c28f641c877223e64871b8098b955db068c26b81e5acd2ffb786dad2bca  
+Testnet explorer: https://explorer.testnet.arc.io/address/0xfa64333dc831d267b71fb12e31e49d5488ef770a
+
+Live app: https://autentika-app.vercel.app  
+Arc Studio project: https://studio.arc.io/app/1f88626c-4f19-4071-ba8c-b2671ea2fa56
 
 ## Environment Variables
 
 | Variable | Purpose |
 |---|---|
-| `RPC_PROXY_BASE_URL` | Arc Studio RPC proxy base URL (optional outside Arc Studio) |
-| `RPC_PROXY_TOKEN` | Arc Studio RPC proxy token (optional outside Arc Studio) |
+| `VITE_AUTENTIKA_MAINNET_ADDRESS` | AutentikaV2 on Arc Mainnet (`0xEeD7…d7D4`). Optional; code already defaults to that address. |
+| `RPC_PROXY_BASE_URL` | Arc Studio RPC proxy base URL (optional outside Arc Studio; never commit) |
+| `RPC_PROXY_TOKEN` | Arc Studio RPC proxy token (optional outside Arc Studio; never commit) |
 | `RPC_PROXY_CHAINS` | Comma-separated chain keys for the proxy (optional outside Arc Studio) |
 
 ## Development

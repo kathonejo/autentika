@@ -31,3 +31,10 @@ All times America/Buenos_Aires (UTC-3).
 - SE-2 `/admin` now deploys Arc Studio bytecode with args `(USDC, her wallet, her wallet)`. Live: https://autentika-tawny.vercel.app/admin
 - Live Arc Studio app published: https://autentika-app.vercel.app (mainnet address env `VITE_AUTENTIKA_MAINNET_ADDRESS` empty until she deploys; did not point at older 0xc84b…).
 - Repo commit: `mainnet config` on kathonejo/autentika.
+
+## 2026-11-01 — Mainnet AutentikaV2 (Arc Studio bytecode) confirmed
+- Katherine deployed AutentikaV2 from /admin with Rabby on Arc Mainnet.
+- Address: 0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4
+- Deploy tx: 0xe7aa5c28f641c877223e64871b8098b955db068c26b81e5acd2ffb786dad2bca (block 29039555, ~16:48 ART).
+- Verified onchain: runtime bytecode matches the Arc Studio AutentikaV2 build (immutable USDC = 0x3600…0000); owner() and feeRecipient() = 0x21e5fc1Efc822f25E1dff11f81214c9C65032D79; platformFeeBps = 50.
+- Wired live app: VITE_AUTENTIKA_MAINNET_ADDRESS on autentika-app (production), src/contract.ts + README updated to mainnet.
