@@ -1,0 +1,1051 @@
+{
+  "contractAddress": "0xf1042573fbffccc48a6a5692a805b02be166db3b",
+  "network": "ARC-TESTNET",
+  "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
+  "contract_code_path": "/home/user/app/contracts/KathonejoCommissions.sol",
+  "contract_compiled_code_path": "/home/user/app/contracts/out/KathonejoCommissions.sol/KathonejoCommissions.json",
+  "contract_network_and_links": {
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0xf1042573fbffccc48a6a5692a805b02be166db3b"
+  },
+  "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0xf1042573fbffccc48a6a5692a805b02be166db3b",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xf1042573fbffccc48a6a5692a805b02be166db3b",
+      "txHash": "0xeff0c8dc071b6ce648f76e38f985c3505f97c4f9de401d5108c9df85ead15595",
+      "deployedAt": "2026-10-28T16:36:42.381Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x6a5c12d2b55523ef1d6bd47b3bd1d471c65f5831",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x6a5c12d2b55523ef1d6bd47b3bd1d471c65f5831",
+      "txHash": "0xc8074aa287688138e1e5bfde1b6526ba3fc29b4e0caaed5c4e50d47632bed22f",
+      "deployedAt": "2026-10-28T16:20:28.635Z"
+    }
+  ],
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "_usdcToken",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "artistProfiles",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "displayName",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "instagramHandle",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "sealUrl",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "signatureUrl",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "exists",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "autoClaimAfterDelivery",
+      "inputs": [
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "cancelCommission",
+      "inputs": [
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "certificateExists",
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "certificates",
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "id",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "artworkTitle",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "artistName",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "technique",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "dimensions",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "creationDate",
+          "type": "uint64",
+          "internalType": "uint64"
+        },
+        {
+          "name": "careInstructions",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "signatureUrl",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "sealUrl",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "instagramHandle",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "photoUrl",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "photoHash",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "amountPaid",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "paymentTxHash",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "releasedAt",
+          "type": "uint64",
+          "internalType": "uint64"
+        },
+        {
+          "name": "collector",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "currentOwner",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "commissions",
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "artist",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "collector",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "deadline",
+          "type": "uint64",
+          "internalType": "uint64"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "status",
+          "type": "uint8",
+          "internalType": "enum KathonejoCommissions.CommissionStatus"
+        },
+        {
+          "name": "deliveredAt",
+          "type": "uint64",
+          "internalType": "uint64"
+        },
+        {
+          "name": "certificateId",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "confirmReceipt",
+      "inputs": [
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "createCommission",
+      "inputs": [
+        {
+          "name": "collector",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "deadline",
+          "type": "uint64",
+          "internalType": "uint64"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "fundCommission",
+      "inputs": [
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "getArtistCommissions",
+      "inputs": [
+        {
+          "name": "artist",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ids",
+          "type": "uint256[]",
+          "internalType": "uint256[]"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getArtistProfile",
+      "inputs": [
+        {
+          "name": "artist",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "profile",
+          "type": "tuple",
+          "internalType": "struct KathonejoCommissions.ArtistProfile",
+          "components": [
+            {
+              "name": "displayName",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "instagramHandle",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "sealUrl",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "signatureUrl",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "exists",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getCertificate",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "certificate",
+          "type": "tuple",
+          "internalType": "struct KathonejoCommissions.Certificate",
+          "components": [
+            {
+              "name": "id",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "commissionId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "artworkTitle",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "artistName",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "technique",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "dimensions",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "creationDate",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "careInstructions",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "signatureUrl",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "sealUrl",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "instagramHandle",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "photoUrl",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "photoHash",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "amountPaid",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "paymentTxHash",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            },
+            {
+              "name": "releasedAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "collector",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "currentOwner",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owners",
+              "type": "address[]",
+              "internalType": "address[]"
+            },
+            {
+              "name": "prices",
+              "type": "uint256[]",
+              "internalType": "uint256[]"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getCollectorCommissions",
+      "inputs": [
+        {
+          "name": "collector",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ids",
+          "type": "uint256[]",
+          "internalType": "uint256[]"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getCommission",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "commission",
+          "type": "tuple",
+          "internalType": "struct KathonejoCommissions.Commission",
+          "components": [
+            {
+              "name": "id",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "artist",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "collector",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "deadline",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "status",
+              "type": "uint8",
+              "internalType": "enum KathonejoCommissions.CommissionStatus"
+            },
+            {
+              "name": "deliveredAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "certificateId",
+              "type": "bytes32",
+              "internalType": "bytes32"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "markDelivered",
+      "inputs": [
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "artworkTitle",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "artistName",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "technique",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "dimensions",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "creationDate",
+          "type": "uint64",
+          "internalType": "uint64"
+        },
+        {
+          "name": "careInstructions",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "photoUrl",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "photoHash",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "pendingWithdrawals",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "refundCollector",
+      "inputs": [
+        {
+          "name": "commissionId",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setArtistProfile",
+      "inputs": [
+        {
+          "name": "displayName",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "instagramHandle",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "sealUrl",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "signatureUrl",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "transferCertificate",
+      "inputs": [
+        {
+          "name": "certificateId",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "newOwner",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "price",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "usdcToken",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "withdraw",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "ArtistProfileUpdated",
+      "inputs": [
+        {
+          "name": "artist",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "CertificateTransferred",
+      "inputs": [
+        {
+          "name": "certificateId",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "from",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "to",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "price",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "CommissionCancelled",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "by",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "CommissionCreated",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "artist",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "collector",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "deadline",
+          "type": "uint64",
+          "indexed": false,
+          "internalType": "uint64"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "CommissionDelivered",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "certificateId",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "photoUrl",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "CommissionFunded",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "collector",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "CommissionRefunded",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "CommissionReleased",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "certificateId",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Withdrawn",
+      "inputs": [
+        {
+          "name": "recipient",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "error",
+      "name": "CertificateNotFound",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "CommissionNotFound",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "DeliveryClaimNotReady",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "EmptyString",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidAddress",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidAmount",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidDeadline",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidPhotoHash",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidStatus",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NothingToWithdraw",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "ReentrancyGuardReentrantCall",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "SafeERC20FailedOperation",
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address",
+          "internalType": "address"
+        }
+      ]
+    },
+    {
+      "type": "error",
+      "name": "Unauthorized",
+      "inputs": []
+    }
+  ]
+}

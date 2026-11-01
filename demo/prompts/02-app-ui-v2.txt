@@ -1,0 +1,13 @@
+Now update the app (frontend) so it uses every AutentikaV2 feature. Keep the current visual style exactly (white drawing-paper background, screen-print halftone dots, pop frames in pink/yellow/light blue, blue #345DB4 buttons and titles). Requirements:
+
+1. Mobile first: a hamburger menu on small screens; every page must work well on a phone.
+2. "My Commissions" with two tabs: "As artist" and "As collector". Show a badge when the same wallet has both roles.
+3. New commission form: artwork type toggle Physical / Digital. Physical shows shipping fields (address, carrier, tracking). Digital hides shipping and lets the artist deliver a link or file. Optional milestones (add/remove rows; amounts must sum to the total) and optional royalty % (0-10%).
+4. Delivery step: the artist uploads a photo of the finished work from the phone; the app computes its SHA-256 automatically and uses it as the certificate hash (keep a manual URL fallback).
+5. Milestones UI: artist marks a milestone done, collector approves it, progress bar of released vs total.
+6. Certificate page: show the NFT certificate (tokenId, image, artist profile, hash, royalty), a "List for resale" form with price, "Cancel listing", and "Buy" for other wallets showing the price split (artist royalty, platform 0.25%, seller).
+7. Optional "Legalize" button for the artist (document hash + note), with a short one-line explanation and a link to a "What is legalization?" page that explains it in plain words.
+8. Admin page (owner only): show platform fee bps, resale bps and fee recipient, with setters.
+9. Network: support Arc Testnet and Arc Mainnet (chain 5042, RPC https://rpc.mainnet.arc.io, explorer https://explorer.arc.io); contract address configurable per network. USDC amounts use 6 decimals.
+
+Run lint and typecheck, test the main flows in the preview, and tell me what changed.

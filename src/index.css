@@ -1,0 +1,312 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Autentika Print-Studio Tokens ─────────────────────────────────── */
+:root {
+  /* Canvas — clean white paper */
+  --bg:              #FFFDF8;
+  --bg-alt:          #FFFFFF;
+
+  /* Brand palette */
+  --blue:            #345DB4;
+  --blue-dark:       #264a91;
+  --blue-light:      #dce8ff;
+  --pink:            #FAB6C1;
+  --pink-dark:       #f07a8d;
+  --yellow:          #FFE45C;
+  --sky:             #9ED8F5;
+  --hotpink:         #F06AA8;
+  --green:           #7CC66B;
+
+  /* Ink */
+  --ink:             #111111;
+  --ink-2:           #2a2a2a;
+  --muted:           #555555;
+  --subtle:          #888888;
+
+  /* Borders */
+  --border:          #e0d8d0;
+  --border-strong:   #345DB4;
+
+  /* Card nested frames */
+  --frame-1:         #FAB6C1;   /* outer */
+  --frame-2:         #FFE45C;   /* middle */
+  --frame-3:         #9ED8F5;   /* inner */
+
+  /* Semantic */
+  --success:         #2e7d32;
+  --success-light:   #c8e6c9;
+  --danger:          #b71c1c;
+  --danger-light:    #ffcdd2;
+  --warning:         #e65100;
+  --warning-light:   #ffe0b2;
+
+  /* Status sticker palette — slightly rotated pill look */
+  --sticker-created-bg:    #FFE45C;
+  --sticker-created-fg:    #5a3e00;
+  --sticker-funded-bg:     #9ED8F5;
+  --sticker-funded-fg:     #0a3566;
+  --sticker-delivered-bg:  #FAB6C1;
+  --sticker-delivered-fg:  #7a0030;
+  --sticker-released-bg:   #7CC66B;
+  --sticker-released-fg:   #0d3b08;
+  --sticker-refunded-bg:   #e0d8d0;
+  --sticker-refunded-fg:   #444444;
+  --sticker-cancelled-bg:  #F06AA8;
+  --sticker-cancelled-fg:  #ffffff;
+
+  /* Halftone dot size & spacing */
+  --dot-size:   2.5px;
+  --dot-gap:    10px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* ── Typography ─────────────────────────────────────────────────────── */
+.display {
+  font-family: 'Space Grotesk', 'Syne', 'Arial Black', sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.poster {
+  font-family: 'Space Grotesk', 'Syne', 'Arial Black', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', Menlo, monospace;
+  letter-spacing: 0;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
+
+/* ── Focus ──────────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2.5px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ── Halftone dot pattern ────────────────────────────────────────────
+   Usage: <div class="halftone" /> or apply inline with style
+   The gradient creates a dot grid using radial-gradient.
+───────────────────────────────────────────────────────────────────── */
+.halftone {
+  background-image:
+    radial-gradient(circle, var(--blue) var(--dot-size), transparent var(--dot-size));
+  background-size: var(--dot-gap) var(--dot-gap);
+  background-repeat: repeat;
+}
+.halftone-pink {
+  background-image:
+    radial-gradient(circle, var(--pink-dark) var(--dot-size), transparent var(--dot-size));
+  background-size: var(--dot-gap) var(--dot-gap);
+  background-repeat: repeat;
+}
+.halftone-yellow {
+  background-image:
+    radial-gradient(circle, #c8a800 2px, transparent 2px);
+  background-size: 10px 10px;
+  background-repeat: repeat;
+}
+/* Corner accent — absolute-positioned halftone square */
+.halftone-corner {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background-image:
+    radial-gradient(circle, var(--blue) var(--dot-size), transparent var(--dot-size));
+  background-size: var(--dot-gap) var(--dot-gap);
+  opacity: 0.18;
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* ── Nested-frame card ───────────────────────────────────────────────
+   A card with three nested colored borders: pink > yellow > sky.
+   The card content sits inside the innermost frame.
+───────────────────────────────────────────────────────────────────── */
+.framed-card {
+  background: var(--bg-alt);
+  /* Three concentric outlines via box-shadow (no extra DOM) */
+  box-shadow:
+    0 0 0 2px var(--frame-1),
+    0 0 0 5px var(--frame-2),
+    0 0 0 8px var(--frame-3);
+  border-radius: 4px;
+}
+
+/* A lighter single-frame variant for less prominent cards */
+.framed-card-sm {
+  background: var(--bg-alt);
+  box-shadow:
+    0 0 0 2px var(--frame-1),
+    0 0 0 4px var(--frame-2);
+  border-radius: 4px;
+}
+
+/* ── Card base (simple bordered) ───────────────────────────────────── */
+.card {
+  background: var(--bg-alt);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+}
+
+/* ── Primary button ─────────────────────────────────────────────────
+   Blue fill, thick blue outline offset, rounded pill
+───────────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: var(--blue);
+  color: #ffffff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-radius: 9999px;
+  border: 2.5px solid var(--blue-dark);
+  outline: 3px solid var(--yellow);
+  outline-offset: 2px;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+.btn-primary:hover  { background: var(--blue-dark); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* Secondary button — outlined */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background: transparent;
+  color: var(--blue);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  border: 2.5px solid var(--blue);
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+.btn-outline:hover  { background: var(--blue-light); transform: translateY(-1px); }
+.btn-outline:active { transform: translateY(1px); }
+.btn-outline:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* Danger button */
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background: var(--danger);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  border: 2.5px solid #8b0000;
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+}
+.btn-danger:hover   { opacity: 0.88; }
+.btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Form input ─────────────────────────────────────────────────────── */
+.field-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.field-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(52,93,180,0.12);
+}
+
+/* ── Field label ────────────────────────────────────────────────────── */
+.field-label {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 0.375rem;
+}
+
+/* ── Sticker badge ───────────────────────────────────────────────────
+   Status pill with a hand-placed, slightly rotated look.
+   Use the data-status attribute to select rotation/color.
+───────────────────────────────────────────────────────────────────── */
+.sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 3px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1.5px solid currentColor;
+  /* will be overridden per-status */
+}
+.sticker[data-status="created"]   { background: var(--sticker-created-bg);   color: var(--sticker-created-fg);   transform: rotate(-1.5deg); }
+.sticker[data-status="funded"]    { background: var(--sticker-funded-bg);     color: var(--sticker-funded-fg);    transform: rotate(1deg); }
+.sticker[data-status="delivered"] { background: var(--sticker-delivered-bg);  color: var(--sticker-delivered-fg); transform: rotate(-0.8deg); }
+.sticker[data-status="released"]  { background: var(--sticker-released-bg);   color: var(--sticker-released-fg);  transform: rotate(1.2deg); }
+.sticker[data-status="refunded"]  { background: var(--sticker-refunded-bg);   color: var(--sticker-refunded-fg);  transform: rotate(-1deg); }
+.sticker[data-status="cancelled"] { background: var(--sticker-cancelled-bg);  color: var(--sticker-cancelled-fg); transform: rotate(1.8deg); }
+
+/* ── Halftone strip (hero texture band) ─────────────────────────────── */
+.halftone-strip {
+  background-image:
+    radial-gradient(circle, var(--blue) var(--dot-size), transparent var(--dot-size));
+  background-size: var(--dot-gap) var(--dot-gap);
+  background-repeat: repeat;
+  opacity: 0.07;
+}
+
+/* ── Section divider rule ───────────────────────────────────────────── */
+.rule-blue {
+  border: none;
+  border-top: 2.5px solid var(--blue);
+  margin: 0;
+}
+.rule-pink {
+  border: none;
+  border-top: 2.5px solid var(--pink);
+  margin: 0;
+}

@@ -1,0 +1,10 @@
+Please upgrade the KathonejoCommissions contract into "AutentikaV2" (keep everything that already works: USDC escrow, artist profiles, certificate fields, autoClaim, refund, pull withdrawals). Add:
+
+1. Optional milestones: when creating a commission the artist can pass an optional list of milestone descriptions + amounts that must sum to the total. Artist marks a milestone done, collector approves and that part is released. No milestones = current single release flow.
+2. Platform fee for the deployer: owner = deployer, feeRecipient = deployer. 0.5% (50 bps, max 2%) taken only on releases to the artist, never on refunds. Owner-only setters setPlatformFeeBps, setFeeRecipient.
+3. Certificate as an ERC-721 NFT: when the collector confirms receipt (or autoClaim), mint the certificate as an NFT to the collector, with tokenURI pointing to the on-chain certificate data, so it can be transferred and resold openly. Keep the existing certificate fields.
+4. Optional royalties: artist can set an optional royalty (max 10%) at creation. Implement ERC-2981 so marketplaces that honor it pay the artist.
+5. Safe resale inside the app: the NFT owner lists the certificate at a price (listCertificate / cancelListing); a buyer calls purchaseCertificate paying exactly the listed price in USDC; the artist royalty and a 0.25% platform resale fee (max 1%, owner setter setPlatformResaleBps) are paid out, rest to the seller.
+6. Optional legalization: the artist can call legalize(tokenId, documentHash, note) once, to attach a hash of a legal/notary document to the certificate. Emit an event.
+
+Keep ReentrancyGuard and pull withdrawals. Write and run Foundry tests for every new feature (milestones, fees on release not refund, NFT mint, royalties, listing/purchase, legalization), run the security review, and redeploy to Arc Testnet. Then show me the summary of tests.
