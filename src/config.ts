@@ -14,11 +14,12 @@ registerChain(arcTestnet.id, arcTestnet.rpcUrls.default.http[0])
 registerChain(arc.id, arc.rpcUrls.default.http[0])
 
 export const config = createConfig({
-  chains: [arcTestnet, arc, mainnet],
+  // Prefer Arc Mainnet first so wallets default there for the live app.
+  chains: [arc, arcTestnet, mainnet],
   connectors: [injected()],
   transports: {
-    [arcTestnet.id]: http(),
     [arc.id]: http('https://rpc.mainnet.arc.io'),
+    [arcTestnet.id]: http(),
     [mainnet.id]: http(), // ENS resolution
   },
 })

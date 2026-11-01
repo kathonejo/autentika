@@ -14,10 +14,17 @@ export function isSupportedChain(id: number): id is SupportedChainId {
 }
 
 // ─── Per-network contract addresses ─────────────────────────────────────────
-// AutentikaV2 is deployed on Arc Testnet. Arc Mainnet address is TBD.
+// AutentikaV2 is deployed on Arc Testnet. Mainnet address from VITE_AUTENTIKA_MAINNET_ADDRESS
+// after Katherine deploys from /admin (do not point at the older non-Arc-Studio V2).
+function readMainnetAddress(): `0x${string}` | null {
+  const raw = (import.meta.env.VITE_AUTENTIKA_MAINNET_ADDRESS as string | undefined)?.trim() || ''
+  if (/^0x[0-9a-fA-F]{40}$/.test(raw)) return raw as `0x${string}`
+  return null
+}
+
 const CONTRACT_ADDRESSES: Record<SupportedChainId, `0x${string}` | null> = {
   [ARC_TESTNET_CHAIN_ID]: '0xfa64333dc831d267b71fb12e31e49d5488ef770a',
-  [ARC_MAINNET_CHAIN_ID]: null, // deploy to mainnet first; set this address
+  [ARC_MAINNET_CHAIN_ID]: readMainnetAddress(),
 };
 
 export function getContractAddress(chainId: SupportedChainId): `0x${string}` | null {
