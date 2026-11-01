@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { useEffect, useState } from 'react'
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, useDeployContract } from 'wagmi'
 import { toast } from 'sonner'
 import { translations } from '@/i18n'
 import type { Lang } from '@/i18n'
@@ -8,6 +8,9 @@ import {
   useReadChainId,
 } from '@/hooks/useCommissions'
 import { KATHONEJO_ABI, getContractAddress } from '@/contract'
+import { AUTENTIKA_DIRECTORY_ABI } from '@/deploy/autentikaDirectoryAbi'
+import { AUTENTIKA_DIRECTORY_BYTECODE } from '@/deploy/autentikaDirectoryBytecode'
+import { getDirectoryAddress, setStoredDirectoryAddress, isDirectoryConfigured } from '@/directory'
 
 interface AdminViewProps {
   lang: Lang
@@ -54,6 +57,95 @@ function FeeRow({ label, currentVal, maxBps, onSet, busy, hint }: FeeRowProps) {
           style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}
         >
           {busy ? 'Saving…' : 'Set'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function DirectoryDeployCard({ lang }: { lang: Lang }) {
+  const t = translations[lang]
+  const chainId = useReadChainId()
+  const autentika = getContractAddress(chainId) ?? undefined
+  const [paste, setPaste] = useState('')
+  const [current, setCurrent] = useState<string | null>(() => getDirectoryAddress(chainId))
+
+  useEffect(() => {
+    setCurrent(getDirectoryAddress(chainId))
+  }, [chainId])
+
+  const { deployContract, data: deployHash, isPending, error } = useDeployContract()
+  const { data: receipt, isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash: deployHash })
+
+  useEffect(() => {
+    if (isSuccess && receipt?.contractAddress) {
+      const addr = receipt.contractAddress as `0x${string}`
+      setStoredDirectoryAddress(addr)
+      setCurrent(addr)
+      toast.success(`${t.directoryAddrSaved}: ${addr}`)
+    }
+  }, [isSuccess, receipt, t.directoryAddrSaved])
+
+  useEffect(() => {
+    if (error) toast.error(error.message.slice(0, 120))
+  }, [error])
+
+  function deploy() {
+    if (!autentika) {
+      toast.error('AutentikaV2 address missing for this network')
+      return
+    }
+    deployContract({
+      abi: AUTENTIKA_DIRECTORY_ABI,
+      bytecode: AUTENTIKA_DIRECTORY_BYTECODE,
+      args: [autentika],
+    })
+  }
+
+  function savePaste() {
+    const raw = paste.trim()
+    if (!/^0x[0-9a-fA-F]{40}$/.test(raw)) {
+      toast.error('Invalid address')
+      return
+    }
+    setStoredDirectoryAddress(raw as `0x${string}`)
+    setCurrent(raw)
+    toast.success(t.directoryAddrSaved)
+  }
+
+  return (
+    <div className="framed-card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
+      <h2 className="display" style={{ fontSize: '1.1rem', color: 'var(--blue)', margin: '0 0 0.5rem' }}>
+        {t.deployDirectoryTitle}
+      </h2>
+      <p style={{ fontSize: '0.85rem', color: 'var(--ink-2)', margin: '0 0 1rem', lineHeight: 1.5 }}>
+        {t.deployDirectoryHint}
+      </p>
+      {current && (
+        <p style={{ fontSize: '0.8rem', fontFamily: 'monospace', wordBreak: 'break-all', color: 'var(--muted)', marginBottom: '0.75rem' }}>
+          {current}
+          {isDirectoryConfigured(chainId) ? ' ✓' : ''}
+        </p>
+      )}
+      <button
+        className="btn-primary"
+        style={{ width: '100%', marginBottom: '0.75rem' }}
+        disabled={isPending || confirming || !autentika}
+        onClick={deploy}
+      >
+        {isPending || confirming ? t.deployingDirectory : t.deployDirectoryBtn}
+      </button>
+      <label className="field-label">{t.pasteDirectoryAddr}</label>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <input
+          className="field-input"
+          placeholder="0x…"
+          value={paste}
+          onChange={e => setPaste(e.target.value)}
+          style={{ flex: 1, minWidth: '200px' }}
+        />
+        <button className="btn-outline" onClick={savePaste} style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}>
+          Set
         </button>
       </div>
     </div>
@@ -123,13 +215,11 @@ export function AdminView({ lang, onBack }: AdminViewProps) {
 
   return (
     <div style={{ maxWidth: '640px', margin: '0 auto', padding: '1.5rem 1rem' }}>
-      {/* Back */}
       <button className="btn-outline" onClick={onBack}
         style={{ fontSize: '0.8rem', padding: '0.35rem 0.9rem', marginBottom: '1.5rem' }}>
         ← {t.back}
       </button>
 
-      {/* Header */}
       <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
         <div className="halftone-corner" style={{ top: 0, right: 0, width: 70, height: 70 }} />
         <h1 className="display" style={{ color: 'var(--blue)', fontSize: '1.6rem', margin: 0 }}>
@@ -137,6 +227,8 @@ export function AdminView({ lang, onBack }: AdminViewProps) {
         </h1>
         <hr className="rule-blue" style={{ marginTop: '0.5rem' }} />
       </div>
+
+      <DirectoryDeployCard lang={lang} />
 
       {!isOwner ? (
         <div className="framed-card" style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--muted)' }}>
@@ -168,7 +260,6 @@ export function AdminView({ lang, onBack }: AdminViewProps) {
             hint="Taken on marketplace resale purchases. Default 25 bps = 0.25%."
           />
 
-          {/* Fee recipient */}
           <div>
             <label className="field-label">{t.feeRecipient}</label>
             <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.5rem' }}>

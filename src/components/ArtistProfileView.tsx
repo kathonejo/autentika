@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain, useChainId } from 'wagmi'
 import { toast } from 'sonner'
+import { parseUsdc } from '@/onchain-money'
 import { KATHONEJO_ABI, isSupportedChain, getContractAddress, ARC_TESTNET_CHAIN_ID } from '@/contract'
 import { useArtistProfile, castArtistProfile } from '@/hooks/useCommissions'
+import { useArtistListing, useDirectoryContractAddress } from '@/hooks/useDirectory'
+import { DIRECTORY_ABI, isDirectoryConfigured } from '@/directory'
+import { artistSharePath } from '@/lib/hashRoute'
 import type { ArtistProfileData } from '@/contract'
 import type { Lang } from '@/i18n'
 import { translations } from '@/i18n'
-import { User, Instagram, Image, PenTool, Save, CheckCircle } from 'lucide-react'
+import { User, Instagram, Image, PenTool, Save, CheckCircle, Copy, Check } from 'lucide-react'
 
 interface Props { lang: Lang; onBack?: () => void }
 
@@ -69,7 +73,109 @@ export function ArtistProfileView({ lang }: Props) {
         )}
       </div>
 
+      {address && <ShareLinkCard lang={lang} address={address} />}
+
       <ProfileForm key={formKey} lang={lang} profile={profile} onSaved={() => { void refetch() }} />
+
+      {address && <DirectoryRegisterCard lang={lang} address={address as `0x${string}`} />}
+    </div>
+  )
+}
+
+function ShareLinkCard({ lang, address }: { lang: Lang; address: string }) {
+  const t = translations[lang]
+  const [copied, setCopied] = useState(false)
+  const path = artistSharePath(address)
+  const full = typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}${path}` : path
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(full)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      toast.error('Copy failed')
+    }
+  }
+
+  return (
+    <div className="framed-card-sm" style={{ padding: '1rem 1.25rem', marginBottom: '1.25rem' }}>
+      <label className="field-label">{t.shareProfileLink}</label>
+      <p style={{ fontSize: '0.75rem', fontFamily: 'monospace', wordBreak: 'break-all', color: 'var(--ink-2)', margin: '0.35rem 0 0.75rem' }}>{full}</p>
+      <button className="btn-outline" onClick={() => { void copy() }} style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem', gap: '0.4rem' }}>
+        {copied ? <Check size={13} /> : <Copy size={13} />}
+        {copied ? (lang === 'es' ? 'Copiado' : 'Copied') : (lang === 'es' ? 'Copiar link' : 'Copy link')}
+      </button>
+    </div>
+  )
+}
+
+function DirectoryRegisterCard({ lang, address }: { lang: Lang; address: `0x${string}` }) {
+  const t = translations[lang]
+  const dirAddr = useDirectoryContractAddress()
+  const { data: listingRaw, refetch } = useArtistListing(address)
+  const listing = listingRaw as { bio: string; basePriceUsdc: bigint; pitch: string; registered: boolean } | undefined
+
+  const [bio, setBio] = useState('')
+  const [pitch, setPitch] = useState('')
+  const [price, setPrice] = useState('1')
+
+  useEffect(() => {
+    if (listing?.registered) {
+      setBio(listing.bio || '')
+      setPitch(listing.pitch || '')
+      if (listing.basePriceUsdc !== undefined) {
+        setPrice((Number(listing.basePriceUsdc) / 1e6).toString())
+      }
+    }
+  }, [listing])
+
+  const { writeContract, data: txHash, isPending } = useWriteContract()
+  const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash: txHash })
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(t.directorySaved)
+      void refetch()
+    }
+  }, [isSuccess, t.directorySaved, refetch])
+
+  if (!isDirectoryConfigured()) {
+    return (
+      <div className="framed-card-sm" style={{ padding: '1rem 1.25rem', marginTop: '1.25rem' }}>
+        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>{t.directoryNotDeployed}</p>
+      </div>
+    )
+  }
+
+  function save() {
+    if (!dirAddr) return
+    writeContract({
+      address: dirAddr,
+      abi: DIRECTORY_ABI,
+      functionName: 'registerArtist',
+      args: [bio, parseUsdc(price || '0'), pitch],
+    }, { onError: e => toast.error(e.message.slice(0, 100)) })
+  }
+
+  return (
+    <div className="framed-card" style={{ padding: '1.5rem', marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <h2 className="display" style={{ fontSize: '1.05rem', color: 'var(--blue)', margin: 0 }}>{t.registerInDirectory}</h2>
+      <div>
+        <label className="field-label">{t.directoryBio}</label>
+        <textarea className="field-input" rows={3} value={bio} onChange={e => setBio(e.target.value)} style={{ width: '100%', resize: 'vertical' }} />
+      </div>
+      <div>
+        <label className="field-label">{t.directoryPitch}</label>
+        <textarea className="field-input" rows={2} value={pitch} onChange={e => setPitch(e.target.value)} style={{ width: '100%', resize: 'vertical' }} />
+      </div>
+      <div>
+        <label className="field-label">{t.directoryBasePrice}</label>
+        <input className="field-input" type="number" min={0} step="0.01" value={price} onChange={e => setPrice(e.target.value)} style={{ maxWidth: 160 }} />
+      </div>
+      <button className="btn-primary" disabled={isPending || confirming || !dirAddr} onClick={save}>
+        {isPending || confirming ? t.saving : t.registerInDirectory}
+      </button>
     </div>
   )
 }

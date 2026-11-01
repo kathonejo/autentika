@@ -18,6 +18,8 @@ import type { Lang } from '@/i18n'
 import { translations } from '@/i18n'
 import { buildShareLink } from '@/lib/share'
 import { Copy, ExternalLink, ArrowLeft } from 'lucide-react'
+import { usePhysicalByCommission, useDirectoryContractAddress } from '@/hooks/useDirectory'
+import { DIRECTORY_ABI, isDirectoryConfigured } from '@/directory'
 
 const RENDER_TIMESTAMP = Date.now()
 
@@ -255,6 +257,10 @@ export function CommissionDetailView({ lang, commissionId, onBack, onViewCert }:
         </div>
       )}
 
+      {isDirectoryConfigured() && isArtist && (
+        <PhysicalFlagSection lang={lang} commissionId={commissionId} />
+      )}
+
       {/* Share link */}
       {shareUrl && (
         <div style={{ marginTop: '1rem' }}>
@@ -264,6 +270,51 @@ export function CommissionDetailView({ lang, commissionId, onBack, onViewCert }:
           </button>
         </div>
       )}
+    </div>
+  )
+}
+
+function PhysicalFlagSection({ lang, commissionId }: { lang: Lang; commissionId: bigint }) {
+  const t = translations[lang]
+  const dirAddr = useDirectoryContractAddress()
+  const { data: physicalRaw, refetch } = usePhysicalByCommission(commissionId)
+  const physical = physicalRaw as { accompaniesPhysical: boolean; redeemed: boolean; shipped: boolean } | undefined
+  const [checked, setChecked] = useState(!!physical?.accompaniesPhysical)
+
+  useEffect(() => {
+    if (physical) setChecked(!!physical.accompaniesPhysical)
+  }, [physical])
+
+  const { writeContract, data: hash, isPending } = useWriteContract()
+  const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(t.physicalFlagSaved)
+      void refetch()
+    }
+  }, [isSuccess, t.physicalFlagSaved, refetch])
+
+  function save() {
+    if (!dirAddr) return
+    writeContract({
+      address: dirAddr,
+      abi: DIRECTORY_ABI,
+      functionName: 'setPhysicalForCommission',
+      args: [commissionId, checked],
+    }, { onError: e => toast.error(e.message.slice(0, 100)) })
+  }
+
+  return (
+    <div className="framed-card-sm" style={{ padding: '1rem 1.25rem', marginTop: '1rem' }}>
+      <h3 className="display" style={{ fontSize: '0.95rem', color: 'var(--blue)', margin: '0 0 0.5rem' }}>{t.physicalTitle}</h3>
+      <p style={{ fontSize: '0.8rem', color: 'var(--ink-2)', margin: '0 0 0.75rem' }}>{t.physicalHint}</p>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', marginBottom: '0.75rem' }}>
+        <input type="checkbox" checked={checked} onChange={e => setChecked(e.target.checked)} />
+        {t.setPhysicalFlag}
+      </label>
+      <button className="btn-outline" style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }} disabled={isPending || confirming || !dirAddr} onClick={save}>
+        {isPending || confirming ? t.saving : t.setFee}
+      </button>
     </div>
   )
 }

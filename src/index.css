@@ -310,3 +310,57 @@ body {
   border-top: 2.5px solid var(--pink);
   margin: 0;
 }
+
+/* ── Pinterest-style masonry feed ───────────────────────────────────── */
+.masonry-feed {
+  columns: 1;
+  column-gap: 1rem;
+}
+@media (min-width: 480px) {
+  .masonry-feed { columns: 2; }
+}
+@media (min-width: 768px) {
+  .masonry-feed { columns: 3; }
+}
+@media (min-width: 1100px) {
+  .masonry-feed { columns: 4; }
+}
+.masonry-card {
+  break-inside: avoid;
+  display: block;
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0;
+  background: var(--bg-alt);
+  border: none;
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 2px var(--frame-1),
+    0 0 0 5px var(--frame-2),
+    0 0 0 8px var(--frame-3);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+.masonry-card:hover { transform: translateY(-2px); }
+.masonry-card img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  max-height: 420px;
+}
+.masonry-placeholder {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-light);
+  color: var(--blue);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 2.5rem;
+}
+.masonry-meta {
+  padding: 0.75rem 0.9rem 1rem;
+}

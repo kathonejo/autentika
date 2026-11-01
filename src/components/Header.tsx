@@ -14,13 +14,16 @@ interface HeaderProps {
   onToggleMenu: () => void
 }
 
-const NAV_ITEMS = ['commissions', 'create', 'profile', 'admin'] as const
+const NAV_ITEMS = ['feed', 'directory', 'commissions', 'create', 'profile', 'tokenize-help', 'admin'] as const
 type NavItem = typeof NAV_ITEMS[number]
 
 function navLabel(item: NavItem, t: typeof translations[Lang]) {
+  if (item === 'feed') return t.navFeed
+  if (item === 'directory') return t.navDirectory
   if (item === 'commissions') return t.myCommissions
   if (item === 'create') return t.newCommission
   if (item === 'profile') return t.artistProfile
+  if (item === 'tokenize-help') return t.navTokenize
   return t.admin
 }
 
@@ -35,7 +38,6 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
 
   return (
     <>
-      {/* Top halftone strip */}
       <div className="halftone-strip" style={{ height: '5px', width: '100%' }} />
 
       <header style={{
@@ -54,9 +56,8 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
           justifyContent: 'space-between',
           height: '56px',
         }}>
-          {/* Logo */}
           <button
-            onClick={() => onNavigate('commissions')}
+            onClick={() => onNavigate('feed')}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               background: 'none', border: 'none', cursor: 'pointer', padding: 0,
@@ -69,22 +70,21 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
             </span>
           </button>
 
-          {/* Desktop nav */}
-          <nav style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}
+          <nav style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', overflowX: 'auto' }}
                className="hidden-mobile">
             {NAV_ITEMS.map(item => (
               <button
                 key={item}
                 onClick={() => onNavigate(item)}
                 style={{
-                  padding: '0.375rem 0.875rem',
+                  padding: '0.3rem 0.7rem',
                   borderRadius: '9999px',
                   border: currentView === item ? '2px solid var(--blue)' : '2px solid transparent',
                   background: currentView === item ? 'var(--blue-light)' : 'transparent',
                   color: currentView === item ? 'var(--blue)' : 'var(--ink)',
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
-                  fontSize: '0.8rem',
+                  fontSize: '0.72rem',
                   cursor: 'pointer',
                   transition: 'all 0.15s',
                   whiteSpace: 'nowrap',
@@ -95,9 +95,7 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
             ))}
           </nav>
 
-          {/* Right: network + lang + wallet + hamburger */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            {/* Network badge */}
             {chainId !== undefined && (
               <span style={{
                 padding: '0.2rem 0.55rem',
@@ -114,7 +112,6 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
               </span>
             )}
 
-            {/* Lang toggle */}
             <button
               onClick={onToggleLang}
               style={{
@@ -132,12 +129,10 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
               {lang === 'en' ? 'ES' : 'EN'}
             </button>
 
-            {/* Wallet — desktop only */}
             <div className="hidden-mobile">
               <ConnectKitButton />
             </div>
 
-            {/* Wrong network switch */}
             {isWrongNetwork && (
               <button
                 className="btn-outline hidden-mobile"
@@ -148,7 +143,6 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
               </button>
             )}
 
-            {/* Network switcher (testnet ↔ mainnet) */}
             {!isWrongNetwork && chainId !== undefined && (
               <button
                 title={isTestnet ? 'Switch to Arc Mainnet' : 'Switch to Arc Testnet'}
@@ -170,7 +164,6 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
               </button>
             )}
 
-            {/* Hamburger */}
             <button
               className="show-mobile"
               onClick={onToggleMenu}
@@ -188,7 +181,6 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
         </div>
       </header>
 
-      {/* Mobile drawer */}
       {menuOpen && (
         <div
           style={{
@@ -218,19 +210,16 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
           overflowY: 'auto',
         }}
       >
-        {/* Drawer header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <span className="poster" style={{ color: 'var(--blue)', fontSize: '1.1rem' }}>Autentika</span>
           <button onClick={onToggleMenu} aria-label={t.closeMenu}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem', color: 'var(--blue)' }}>✕</button>
         </div>
 
-        {/* Wallet */}
         <div style={{ marginBottom: '1rem' }}>
           <ConnectKitButton />
         </div>
 
-        {/* Network switch */}
         {!isWrongNetwork && chainId !== undefined && (
           <button
             onClick={() => { switchChain({ chainId: isTestnet ? ARC_MAINNET_CHAIN_ID : ARC_TESTNET_CHAIN_ID }); onToggleMenu() }}
@@ -253,7 +242,6 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
 
         <hr style={{ border: 'none', borderTop: '1.5px solid var(--border)', margin: '0.5rem 0' }} />
 
-        {/* Nav links */}
         {NAV_ITEMS.map(item => (
           <button
             key={item}

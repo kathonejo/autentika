@@ -31,7 +31,23 @@ Mainnet explorer: https://explorer.arc.io/address/0xEeD7B7a048bcdd43801c644F75Fd
 Mainnet deploy tx: https://explorer.arc.io/tx/0xe7aa5c28f641c877223e64871b8098b955db068c26b81e5acd2ffb786dad2bca  
 Testnet explorer: https://explorer.testnet.arc.io/address/0xfa64333dc831d267b71fb12e31e49d5488ef770a
 
-Live app: https://autentika-app.vercel.app  
+Live app: https://autentika-app.vercel.app
+
+## Marketplace screens (hash routes)
+
+| Screen | URL |
+|---|---|
+| Feed (Pinterest-style certificates) | https://autentika-app.vercel.app/#/feed |
+| Artist directory | https://autentika-app.vercel.app/#/directorio |
+| Public artist profile + 289-char request | https://autentika-app.vercel.app/#/artista/<address> |
+| Individual work | https://autentika-app.vercel.app/#/obra/<tokenId> |
+| Tokenize / ERC-3643 help | https://autentika-app.vercel.app/#/tokenizar |
+| Admin (deploy AutentikaDirectory) | https://autentika-app.vercel.app/#/admin |
+
+Companion contract **AutentikaDirectory** (artist registry, ≤289-byte commission requests, one-time physical redemption) is deployed by Katherine from Admin → Deploy AutentikaDirectory (signs in Rabby). Set `VITE_AUTENTIKA_DIRECTORY_ADDRESS` after deploy. Until then the feed/directory/profiles still work from AutentikaV2; request/redeem buttons degrade gracefully.
+
+| AutentikaDirectory | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
+  
 Arc Studio project: https://studio.arc.io/app/1f88626c-4f19-4071-ba8c-b2671ea2fa56
 
 ## Environment Variables

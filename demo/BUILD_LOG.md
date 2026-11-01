@@ -38,3 +38,10 @@ All times America/Buenos_Aires (UTC-3).
 - Deploy tx: 0xe7aa5c28f641c877223e64871b8098b955db068c26b81e5acd2ffb786dad2bca (block 29039555, ~16:48 ART).
 - Verified onchain: runtime bytecode matches the Arc Studio AutentikaV2 build (immutable USDC = 0x3600…0000); owner() and feeRecipient() = 0x21e5fc1Efc822f25E1dff11f81214c9C65032D79; platformFeeBps = 50.
 - Wired live app: VITE_AUTENTIKA_MAINNET_ADDRESS on autentika-app (production), src/contract.ts + README updated to mainnet.
+
+## 2026-11-01 — Marketplace: feed, directory, requests, physical, tokenize help
+- Companion contract AutentikaDirectory.sol (Foundry, 13/13 tests): artist registry (bio, base USDC price, pitch), on-chain commission requests capped at 289 bytes, physical-artwork flag per commission, redeemPhysical once by current ERC-721 owner, markShipped by artist. References live AutentikaV2; does not modify V2.
+- App: hash routes `#/feed` (masonry of certificates), `#/directorio`, `#/artista/0x…` (share link + 289-char request box with counter), `#/obra/n` (work → artist + physical redeem), `#/tokenizar` (honest ERC-721 vs ERC-3643/T-REX explanation — no overclaim).
+- Admin: second Deploy button for AutentikaDirectory (Katherine signs in Rabby); address saved to localStorage / `VITE_AUTENTIKA_DIRECTORY_ADDRESS`. Graceful degrade until deployed.
+- Artist profile: shareable `#/artista/<wallet>` link + directory registration form.
+- Commission detail: artist can set physical-accompanies-NFT flag once Directory is live.

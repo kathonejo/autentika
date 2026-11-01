@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { Lang } from '@/i18n'
 import { Header } from './components/Header'
 import { CommissionsListView } from './components/CommissionsListView'
@@ -9,57 +9,60 @@ import { ArtistProfileView } from './components/ArtistProfileView'
 import { WithdrawBanner } from './components/WithdrawBanner'
 import { AdminView } from './components/AdminView'
 import { LegalizeHelpView } from './components/LegalizeHelpView'
+import { FeedView } from './components/FeedView'
+import { DirectoryView } from './components/DirectoryView'
+import { PublicArtistView } from './components/PublicArtistView'
+import { WorkView } from './components/WorkView'
+import { TokenizeHelpView } from './components/TokenizeHelpView'
+import { parseHashView, hashForView, type HashView } from '@/lib/hashRoute'
 
-export type View =
-  | { name: 'commissions' }
-  | { name: 'create' }
-  | { name: 'profile' }
-  | { name: 'admin' }
-  | { name: 'legalize-help' }
-  | { name: 'detail'; id: bigint }
-  | { name: 'cert'; certId: string }
-
-function parseInitialView(): View {
-  const params = new URLSearchParams(window.location.search)
-  const cert = params.get('cert')
-  const commission = params.get('commission')
-  if (cert) return { name: 'cert', certId: cert }
-  if (commission) {
-    try {
-      const id = BigInt(commission)
-      if (id > 0n) return { name: 'detail', id }
-    } catch { /* ignore */ }
-  }
-  return { name: 'commissions' }
-}
+export type View = HashView
 
 export default function App() {
-  const [lang, setLang] = useState<Lang>('en')
-  const [view, setView] = useState<View>(parseInitialView)
+  const [lang, setLang] = useState<Lang>('es')
+  const [view, setView] = useState<View>(parseHashView)
   const [refreshKey, setRefreshKey] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
 
-  // Sync URL with view
+  const go = useCallback((next: View) => {
+    setMenuOpen(false)
+    setView(next)
+    const hash = hashForView(next)
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, '', `${window.location.pathname}${hash}`)
+    }
+  }, [])
+
   useEffect(() => {
-    const params = new URLSearchParams()
-    if (view.name === 'detail') params.set('commission', view.id.toString())
-    if (view.name === 'cert') params.set('cert', view.certId)
-    const search = params.toString() ? `?${params.toString()}` : ''
-    window.history.replaceState(null, '', `${window.location.pathname}${search}`)
+    const hash = hashForView(view)
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, '', `${window.location.pathname}${hash}`)
+    }
   }, [view])
 
-  // Close menu on any navigation
+  useEffect(() => {
+    function onHash() {
+      setView(parseHashView())
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
   function navigate(name: string) {
-    setMenuOpen(false)
-    if (name === 'create') setView({ name: 'create' })
-    else if (name === 'profile') setView({ name: 'profile' })
-    else if (name === 'admin') setView({ name: 'admin' })
-    else setView({ name: 'commissions' })
+    if (name === 'feed') go({ name: 'feed' })
+    else if (name === 'directory') go({ name: 'directory' })
+    else if (name === 'create') go({ name: 'create' })
+    else if (name === 'profile') go({ name: 'profile' })
+    else if (name === 'admin') go({ name: 'admin' })
+    else if (name === 'tokenize-help') go({ name: 'tokenize-help' })
+    else if (name === 'commissions') go({ name: 'commissions' })
+    else go({ name: 'feed' })
   }
 
   const currentViewName =
     view.name === 'detail' || view.name === 'cert' || view.name === 'legalize-help'
-      ? 'commissions'
+      || view.name === 'work' || view.name === 'artist' || view.name === 'tokenize-help'
+      ? (view.name === 'work' || view.name === 'artist' || view.name === 'tokenize-help' ? view.name === 'tokenize-help' ? 'tokenize-help' : 'feed' : 'commissions')
       : view.name
 
   return (
@@ -75,10 +78,50 @@ export default function App() {
       <WithdrawBanner lang={lang} />
 
       <main style={{ paddingBottom: '5rem' }}>
+        {view.name === 'feed' && (
+          <FeedView
+            lang={lang}
+            onOpenWork={(tokenId) => go({ name: 'work', tokenId })}
+            onOpenDirectory={() => go({ name: 'directory' })}
+          />
+        )}
+
+        {view.name === 'directory' && (
+          <DirectoryView
+            lang={lang}
+            onOpenArtist={(address) => go({ name: 'artist', address })}
+            onBack={() => go({ name: 'feed' })}
+          />
+        )}
+
+        {view.name === 'artist' && (
+          <PublicArtistView
+            lang={lang}
+            artist={view.address}
+            onBack={() => go({ name: 'directory' })}
+            onOpenWork={(tokenId) => go({ name: 'work', tokenId })}
+            onOpenCommission={(id) => go({ name: 'detail', id })}
+          />
+        )}
+
+        {view.name === 'work' && (
+          <WorkView
+            lang={lang}
+            tokenId={view.tokenId}
+            onBack={() => go({ name: 'feed' })}
+            onOpenArtist={(addr) => go({ name: 'artist', address: addr })}
+            onTokenizeHelp={() => go({ name: 'tokenize-help' })}
+          />
+        )}
+
+        {view.name === 'tokenize-help' && (
+          <TokenizeHelpView lang={lang} onBack={() => go({ name: 'feed' })} />
+        )}
+
         {view.name === 'commissions' && (
           <CommissionsListView
             lang={lang}
-            onSelect={(id) => setView({ name: 'detail', id })}
+            onSelect={(id) => go({ name: 'detail', id })}
             refreshKey={refreshKey}
           />
         )}
@@ -88,30 +131,30 @@ export default function App() {
             lang={lang}
             onCreated={() => {
               setRefreshKey(k => k + 1)
-              setView({ name: 'commissions' })
+              go({ name: 'commissions' })
             }}
-            onBack={() => setView({ name: 'commissions' })}
+            onBack={() => go({ name: 'commissions' })}
           />
         )}
 
         {view.name === 'profile' && (
           <ArtistProfileView
             lang={lang}
-            onBack={() => setView({ name: 'commissions' })}
+            onBack={() => go({ name: 'feed' })}
           />
         )}
 
         {view.name === 'admin' && (
           <AdminView
             lang={lang}
-            onBack={() => setView({ name: 'commissions' })}
+            onBack={() => go({ name: 'feed' })}
           />
         )}
 
         {view.name === 'legalize-help' && (
           <LegalizeHelpView
             lang={lang}
-            onBack={() => setView({ name: 'commissions' })}
+            onBack={() => go({ name: 'commissions' })}
           />
         )}
 
@@ -119,8 +162,8 @@ export default function App() {
           <CommissionDetailView
             lang={lang}
             commissionId={view.id}
-            onBack={() => setView({ name: 'commissions' })}
-            onViewCert={(certId) => setView({ name: 'cert', certId })}
+            onBack={() => go({ name: 'commissions' })}
+            onViewCert={(certId) => go({ name: 'cert', certId })}
           />
         )}
 
@@ -128,8 +171,8 @@ export default function App() {
           <CertificateView
             lang={lang}
             certId={view.certId}
-            onBack={() => setView({ name: 'commissions' })}
-            onLegalizeHelp={() => setView({ name: 'legalize-help' })}
+            onBack={() => go({ name: 'commissions' })}
+            onLegalizeHelp={() => go({ name: 'legalize-help' })}
           />
         )}
       </main>
