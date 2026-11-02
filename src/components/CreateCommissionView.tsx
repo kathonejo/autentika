@@ -6,7 +6,6 @@ import { KATHONEJO_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_
 import { translations } from '@/i18n'
 import type { Lang } from '@/i18n'
 
-// Computed once at module load; stable across all renders
 function computeMinDate(): string {
   const d = new Date()
   d.setDate(d.getDate() + 1)
@@ -31,23 +30,13 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
   const readChainId = chainId !== undefined && isSupportedChain(chainId) ? chainId : ARC_TESTNET_CHAIN_ID
   const contractAddr = getContractAddress(readChainId) ?? undefined
 
-  // Core fields
   const [collector, setCollector] = useState('')
   const [amountStr, setAmountStr] = useState('')
   const [deadline, setDeadline] = useState('')
   const [title, setTitle] = useState('')
 
-  // Artwork type
-  const [artworkType, setArtworkType] = useState<'physical' | 'digital'>('physical')
-  const [shippingAddr, setShippingAddr] = useState('')
-  const [carrier, setCarrier] = useState('')
-  const [tracking, setTracking] = useState('')
-  const [digitalLink, setDigitalLink] = useState('')
-
-  // Milestones
+  const [advancedOpen, setAdvancedOpen] = useState(false)
   const [milestones, setMilestones] = useState<MilestoneRow[]>([])
-
-  // Royalty
   const [royaltyPct, setRoyaltyPct] = useState('0')
 
   const { writeContract, data: hash, isPending } = useWriteContract()
@@ -56,7 +45,6 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
     onReplaced: () => toast(t.transactionConfirmed),
   })
 
-  // ── Milestone helpers ──────────────────────────────────────────────────────
   function addMilestone() {
     if (milestones.length >= 20) return
     setMilestones(prev => [...prev, { description: '', amount: '' }])
@@ -71,11 +59,9 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
   const totalAmt = amountStr ? parseFloat(amountStr) : 0
   const msTotalNum = milestones.reduce((s, m) => s + (parseFloat(m.amount) || 0), 0)
   const msError = milestones.length > 0 && Math.abs(msTotalNum - totalAmt) > 0.000001
-  // Convert to bigint for display (6 decimal USDC: multiply by 1e6)
   const msTotal = BigInt(Math.round(msTotalNum * 1_000_000))
   const royaltyBps = Math.round(parseFloat(royaltyPct || '0') * 100)
 
-  // ── Submit ─────────────────────────────────────────────────────────────────
   function handleCreate() {
     if (!address || !contractAddr) return
     if (!collector || !amountStr || !deadline || !title) return
@@ -84,15 +70,8 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
 
     const deadlineTs = BigInt(Math.floor(new Date(deadline).getTime() / 1000))
     const amount = parseUsdc(amountStr)
-
-    // Build milestone arrays
     const mDescs = milestones.map(m => m.description)
     const mAmts = milestones.map(m => parseUsdc(m.amount))
-
-    // Embed artwork type metadata into title (simple approach: prefix)
-    const titleWithMeta = artworkType === 'digital'
-      ? `[Digital] ${title}`
-      : `[Physical] ${title}`
 
     writeContract({
       address: contractAddr,
@@ -102,7 +81,7 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
         collector as `0x${string}`,
         amount,
         deadlineTs,
-        titleWithMeta,
+        title.trim(),
         royaltyBps,
         mDescs,
         mAmts,
@@ -117,18 +96,15 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
   }
 
   const busy = isPending || confirming
-
   const minDateStr = MODULE_MIN_DATE
 
   return (
     <div style={{ maxWidth: 680, margin: '0 auto', padding: '1.5rem 1rem 3rem' }}>
-      {/* Back */}
       <button className="btn-outline" onClick={onBack}
         style={{ fontSize: '0.8rem', padding: '0.35rem 0.9rem', marginBottom: '1.5rem' }}>
         ← {t.back}
       </button>
 
-      {/* Header */}
       <div style={{ position: 'relative', marginBottom: '1.75rem' }}>
         <div className="halftone-corner" style={{ top: 0, right: 0, width: 80, height: 80 }} />
         <h1 className="display" style={{ color: 'var(--blue)', fontSize: '1.75rem', margin: 0 }}>
@@ -138,36 +114,6 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
       </div>
 
       <div className="framed-card" style={{ padding: '1.5rem 1.25rem' }}>
-
-        {/* ── Artwork type toggle ───────────────────────────────────── */}
-        <fieldset style={{ border: 'none', padding: 0, marginBottom: '1.25rem' }}>
-          <legend className="field-label">{t.artworkType}</legend>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.375rem' }}>
-            {(['physical', 'digital'] as const).map(type => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => setArtworkType(type)}
-                style={{
-                  padding: '0.45rem 1.25rem',
-                  borderRadius: 9999,
-                  border: artworkType === type ? '2.5px solid var(--blue)' : '2px solid var(--border)',
-                  background: artworkType === type ? 'var(--blue)' : 'transparent',
-                  color: artworkType === type ? '#fff' : 'var(--ink)',
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontWeight: 700,
-                  fontSize: '0.85rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s',
-                }}
-              >
-                {type === 'physical' ? t.physical : t.digital}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-
-        {/* ── Core fields ───────────────────────────────────────────── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <Field label={t.commissionTitle}>
             <input className="field-input" value={title} onChange={e => setTitle(e.target.value)} placeholder="Portrait in oils" />
@@ -185,126 +131,106 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
           </div>
         </div>
 
-        {/* ── Shipping fields (physical only) ──────────────────────── */}
-        {artworkType === 'physical' && (
-          <div style={{ marginTop: '1.25rem', padding: '1rem', background: 'var(--blue-light)', borderRadius: 6, border: '1.5px solid var(--blue)' }}>
-            <p className="field-label" style={{ marginBottom: '0.75rem' }}>Shipping Info (optional — for your records)</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Field label={t.shippingAddress}>
-                <input className="field-input" value={shippingAddr} onChange={e => setShippingAddr(e.target.value)} placeholder="Street, City, Country" />
-              </Field>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                <Field label={t.shippingCarrier}>
-                  <input className="field-input" value={carrier} onChange={e => setCarrier(e.target.value)} placeholder="FedEx, DHL…" />
-                </Field>
-                <Field label={t.shippingTracking}>
-                  <input className="field-input" value={tracking} onChange={e => setTracking(e.target.value)} placeholder="1Z…" />
-                </Field>
-              </div>
-            </div>
-            <p style={{ fontSize: '0.7rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
-              Shipping details are stored in the browser only — not sent to the blockchain.
-            </p>
-          </div>
-        )}
-
-        {/* ── Digital delivery hint ─────────────────────────────────── */}
-        {artworkType === 'digital' && (
-          <div style={{ marginTop: '1.25rem', padding: '1rem', background: 'var(--sky)', borderRadius: 6, border: '1.5px solid var(--blue)', opacity: 0.9 }}>
-            <Field label={t.digitalLink}>
-              <input className="field-input" value={digitalLink} onChange={e => setDigitalLink(e.target.value)} placeholder="https://… or describe how the file will be delivered" />
-            </Field>
-            <p style={{ fontSize: '0.7rem', color: 'var(--muted)', marginTop: '0.5rem' }}>{t.digitalLinkHint}</p>
-          </div>
-        )}
-
-        {/* ── Milestones ────────────────────────────────────────────── */}
-        <div style={{ marginTop: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <label className="field-label">{t.milestones}</label>
-            <button
-              type="button"
-              onClick={addMilestone}
-              disabled={milestones.length >= 20}
-              style={{
-                background: 'none', border: '1.5px dashed var(--blue)', borderRadius: 9999,
-                color: 'var(--blue)', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
-                fontSize: '0.75rem', padding: '0.2rem 0.75rem', cursor: 'pointer',
-              }}
-            >
-              {t.addMilestone}
-            </button>
-          </div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.5rem' }}>{t.milestonesHint}</p>
-
-          {milestones.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              {milestones.map((m, i) => (
-                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 100px auto', gap: '0.5rem', alignItems: 'end' }}>
-                  <div>
-                    <label className="field-label">{t.milestoneDescription} {i + 1}</label>
-                    <input
-                      className="field-input"
-                      value={m.description}
-                      onChange={e => updateMilestone(i, 'description', e.target.value)}
-                      placeholder={`Step ${i + 1}…`}
-                    />
-                  </div>
-                  <div>
-                    <label className="field-label">USDC</label>
-                    <input
-                      className="field-input"
-                      type="number"
-                      min="0.01"
-                      step="0.01"
-                      value={m.amount}
-                      onChange={e => updateMilestone(i, 'amount', e.target.value)}
-                      placeholder="0.00"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeMilestone(i)}
-                    style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: '1.1rem', paddingBottom: '0.2rem' }}
-                    aria-label="Remove milestone"
-                  >×</button>
-                </div>
-              ))}
-
-              {/* Sum check */}
-              <div style={{ fontSize: '0.75rem', marginTop: '0.25rem', color: msError ? 'var(--danger)' : 'var(--muted)' }}>
-                {t.milestoneOf} {formatUsdc(msTotal)} / {amountStr || '0'} USDC
-                {msError && <span style={{ marginLeft: '0.5rem', fontWeight: 700 }}>⚠ {t.milestoneSumError}</span>}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ── Royalty ───────────────────────────────────────────────── */}
-        <div style={{ marginTop: '1.5rem' }}>
-          <label className="field-label">{t.royalty} {t.royaltyMax}</label>
-          <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.5rem' }}>{t.royaltyHint}</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <input
-              className="field-input"
-              type="range"
-              min="0"
-              max="10"
-              step="0.5"
-              value={royaltyPct}
-              onChange={e => setRoyaltyPct(e.target.value)}
-              style={{ flex: 1, accentColor: 'var(--blue)' }}
-            />
-            <span className="poster" style={{ fontSize: '1.1rem', color: 'var(--blue)', minWidth: '3.5rem', textAlign: 'right' }}>
-              {parseFloat(royaltyPct) === 0 ? t.noRoyalty : `${royaltyPct}%`}
-            </span>
-          </div>
-        </div>
-
-        {/* ── Deadline hint ─────────────────────────────────────────── */}
         <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '1rem', lineHeight: 1.5 }}>{t.deadlineHint}</p>
 
-        {/* ── Submit ───────────────────────────────────────────────── */}
+        <details
+          open={advancedOpen}
+          onToggle={e => setAdvancedOpen((e.target as HTMLDetailsElement).open)}
+          style={{ marginTop: '1.5rem', border: '1.5px dashed var(--border)', borderRadius: 8, padding: '0.75rem 1rem' }}
+        >
+          <summary
+            style={{
+              cursor: 'pointer',
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              color: 'var(--blue)',
+              listStyle: 'none',
+            }}
+          >
+            {t.advancedSection} <span style={{ color: 'var(--muted)', fontWeight: 500 }}>({t.optional})</span>
+          </summary>
+          <p style={{ fontSize: '0.75rem', color: 'var(--muted)', margin: '0.5rem 0 1rem' }}>{t.advancedSectionHint}</p>
+
+          <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <label className="field-label">{t.milestones}</label>
+              <button
+                type="button"
+                onClick={addMilestone}
+                disabled={milestones.length >= 20}
+                style={{
+                  background: 'none', border: '1.5px dashed var(--blue)', borderRadius: 9999,
+                  color: 'var(--blue)', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
+                  fontSize: '0.75rem', padding: '0.2rem 0.75rem', cursor: 'pointer',
+                }}
+              >
+                {t.addMilestone}
+              </button>
+            </div>
+            <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.5rem' }}>{t.milestonesHint}</p>
+            {milestones.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                {milestones.map((m, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 100px auto', gap: '0.5rem', alignItems: 'end' }}>
+                    <div>
+                      <label className="field-label">{t.milestoneDescription} {i + 1}</label>
+                      <input
+                        className="field-input"
+                        value={m.description}
+                        onChange={e => updateMilestone(i, 'description', e.target.value)}
+                        placeholder={`Step ${i + 1}…`}
+                      />
+                    </div>
+                    <div>
+                      <label className="field-label">USDC</label>
+                      <input
+                        className="field-input"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={m.amount}
+                        onChange={e => updateMilestone(i, 'amount', e.target.value)}
+                        placeholder="0.00"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeMilestone(i)}
+                      style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: '1.1rem', paddingBottom: '0.2rem' }}
+                      aria-label="Remove milestone"
+                    >×</button>
+                  </div>
+                ))}
+                <div style={{ fontSize: '0.75rem', marginTop: '0.25rem', color: msError ? 'var(--danger)' : 'var(--muted)' }}>
+                  {t.milestoneOf} {formatUsdc(msTotal)} / {amountStr || '0'} USDC
+                  {msError && <span style={{ marginLeft: '0.5rem', fontWeight: 700 }}>⚠ {t.milestoneSumError}</span>}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="field-label">{t.royalty} {t.royaltyMax}</label>
+            <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.5rem' }}>{t.royaltyHint}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <input
+                className="field-input"
+                type="range"
+                min="0"
+                max="10"
+                step="0.5"
+                value={royaltyPct}
+                onChange={e => setRoyaltyPct(e.target.value)}
+                style={{ flex: 1, accentColor: 'var(--blue)' }}
+              />
+              <span className="poster" style={{ fontSize: '1.1rem', color: 'var(--blue)', minWidth: '3.5rem', textAlign: 'right' }}>
+                {parseFloat(royaltyPct) === 0 ? t.noRoyalty : `${royaltyPct}%`}
+              </span>
+            </div>
+          </div>
+        </details>
+
         <div style={{ marginTop: '1.5rem' }}>
           <button
             className="btn-primary"

@@ -60,7 +60,7 @@ export function ArtistProfileView({ lang }: Props) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div>
           <h1 className="poster" style={{ fontSize: '2rem', color: 'var(--blue)', margin: 0 }}>{t.artistProfile}</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--muted)', fontFamily: "'Inter', sans-serif", marginTop: '0.25rem' }}>{t.profileSubtitle}</p>
+          <p style={{ fontSize: '0.875rem', color: 'var(--muted)', fontFamily: "'Inter', sans-serif", marginTop: '0.25rem' }}>{t.soyArtistaPageHint}</p>
         </div>
         {profile?.exists && (
           <span
@@ -73,11 +73,21 @@ export function ArtistProfileView({ lang }: Props) {
         )}
       </div>
 
-      {address && <ShareLinkCard lang={lang} address={address} />}
-
-      <ProfileForm key={formKey} lang={lang} profile={profile} onSaved={() => { void refetch() }} />
+      <p style={{ fontSize: '0.9rem', color: 'var(--ink-2)', margin: '0 0 1.25rem', lineHeight: 1.55 }}>
+        {t.soyArtistaIntro}
+      </p>
 
       {address && <DirectoryRegisterCard lang={lang} address={address as `0x${string}`} />}
+
+      {address && <ShareLinkCard lang={lang} address={address} />}
+
+      <details style={{ marginTop: '1.25rem' }}>
+        <summary style={{
+          cursor: 'pointer', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
+          fontSize: '0.9rem', color: 'var(--blue)', marginBottom: '0.75rem',
+        }}>{t.optionalSealStep}</summary>
+        <ProfileForm key={formKey} lang={lang} profile={profile} onSaved={() => { void refetch() }} />
+      </details>
     </div>
   )
 }
@@ -160,7 +170,8 @@ function DirectoryRegisterCard({ lang, address }: { lang: Lang; address: `0x${st
 
   return (
     <div className="framed-card" style={{ padding: '1.5rem', marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <h2 className="display" style={{ fontSize: '1.05rem', color: 'var(--blue)', margin: 0 }}>{t.registerInDirectory}</h2>
+      <h2 className="display" style={{ fontSize: '1.05rem', color: 'var(--blue)', margin: 0 }}>{t.soyArtistaTitle}</h2>
+      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--muted)' }}>{t.soyArtistaStep1}</p>
       <div>
         <label className="field-label">{t.directoryBio}</label>
         <textarea className="field-input" rows={3} value={bio} onChange={e => setBio(e.target.value)} style={{ width: '100%', resize: 'vertical' }} />

@@ -58,3 +58,12 @@ All times America/Buenos_Aires (UTC-3).
 - Admin third Deploy card + `VITE_AUTENTIKA_SUBSCRIPTIONS_ADDRESS` graceful degrade.
 - UI `#/suscripciones` (Depositar+lock / Mi saldo / Vista artista) + Suscribirme on artist profiles; shipping note off-chain.
 - Nav simplified (kondo): primary Feed, Artists, Suscripciones, Cómo funciona, Encargos.
+
+## 2026-11-01 (noche) — Kondo-ramsay simplification (UI/docs only)
+- Katherine approved simplifying half-done surfaces into **Próximamente / Roadmap** (grant narrative: shipping + finishing real growth features).
+- Create commission: removed shipping/carrier/tracking/digitalLink and `[Physical]`/`[Digital]` title prefixes; milestones + royalty inside closed **Avanzado** (defaults off/0).
+- Delivery form: prefill artist name from profile; sensible defaults for technique/dimensions/care — photo + title are the real required fields.
+- Certificate view: hide list/buy/resale, legalize, transfer from main flow; keep **Verificado en blockchain** + NFT; roadmap note instead.
+- Header primary (max 5): Feed, Directorio, Encargos, Crear, Perfil. Cómo funciona / Tokenizar / Admin / Suscripciones in footer + mobile “Más”. Suscripciones entry from Encargos.
+- Profile: clear **Soy artista** path — Directory first; V2 seal/signature optional in same view.
+- `#/como-funciona` + README + DoraHacks borrador: working now vs roadmap (honest). AutentikaV2 mainnet untouched.

@@ -14,8 +14,8 @@ interface HeaderProps {
   onToggleMenu: () => void
 }
 
-const PRIMARY_NAV = ['feed', 'directory', 'subscriptions', 'how-it-works', 'commissions'] as const
-const MORE_NAV = ['create', 'profile', 'tokenize-help', 'admin'] as const
+const PRIMARY_NAV = ['feed', 'directory', 'commissions', 'create', 'profile'] as const
+const MORE_NAV = ['subscriptions', 'how-it-works', 'tokenize-help', 'admin'] as const
 const NAV_ITEMS = [...PRIMARY_NAV, ...MORE_NAV] as const
 type NavItem = typeof NAV_ITEMS[number]
 
@@ -246,7 +246,7 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
 
         <hr style={{ border: 'none', borderTop: '1.5px solid var(--border)', margin: '0.5rem 0' }} />
 
-        {NAV_ITEMS.map(item => (
+        {PRIMARY_NAV.map(item => (
           <button
             key={item}
             onClick={() => onNavigate(item)}
@@ -263,6 +263,29 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
               cursor: 'pointer',
               textAlign: 'left',
               transition: 'all 0.15s',
+            }}
+          >
+            {navLabel(item, t)}
+          </button>
+        ))}
+        <hr style={{ border: 'none', borderTop: '1.5px solid var(--border)', margin: '0.75rem 0' }} />
+        <p style={{ fontSize: '0.65rem', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--muted)', margin: '0 0 0.35rem' }}>{t.moreLinks}</p>
+        {MORE_NAV.map(item => (
+          <button
+            key={item}
+            onClick={() => onNavigate(item)}
+            style={{
+              width: '100%',
+              padding: '0.65rem 1rem',
+              borderRadius: '8px',
+              border: currentView === item ? '2px solid var(--blue)' : '2px solid transparent',
+              background: currentView === item ? 'var(--blue-light)' : 'transparent',
+              color: currentView === item ? 'var(--blue)' : 'var(--muted)',
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              textAlign: 'left',
             }}
           >
             {navLabel(item, t)}

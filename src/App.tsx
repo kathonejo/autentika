@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { Lang } from '@/i18n'
+import { translations } from '@/i18n'
 import { Header } from './components/Header'
 import { CommissionsListView } from './components/CommissionsListView'
 import { CreateCommissionView } from './components/CreateCommissionView'
@@ -66,10 +67,12 @@ export default function App() {
   const currentViewName =
     view.name === 'detail' || view.name === 'cert' || view.name === 'legalize-help'
       || view.name === 'work' || view.name === 'artist' || view.name === 'tokenize-help'
-      || view.name === 'how-it-works' || view.name === 'subscriptions'
-      ? (view.name === 'how-it-works' || view.name === 'tokenize-help'
+      || view.name === 'how-it-works' || view.name === 'subscriptions' || view.name === 'admin'
+      ? (view.name === 'how-it-works' || view.name === 'tokenize-help' || view.name === 'admin'
           ? view.name
-          : (view.name === 'work' || view.name === 'artist' ? 'feed' : 'commissions'))
+          : (view.name === 'work' || view.name === 'artist' ? 'feed'
+            : view.name === 'subscriptions' ? 'commissions'
+            : 'commissions'))
       : view.name
 
   return (
@@ -147,8 +150,9 @@ export default function App() {
         {view.name === 'commissions' && (
           <CommissionsListView
             lang={lang}
-            onSelect={(id) => go({ name: 'detail', id })}
             refreshKey={refreshKey}
+            onSelect={(id) => go({ name: 'detail', id })}
+            onOpenSubscriptions={() => go({ name: 'subscriptions' })}
           />
         )}
 
@@ -202,6 +206,25 @@ export default function App() {
           />
         )}
       </main>
+
+      <footer style={{
+        maxWidth: '72rem', margin: '0 auto', padding: '1.5rem 1rem 2.5rem',
+        borderTop: '1.5px solid var(--border)', display: 'flex', flexWrap: 'wrap', gap: '0.75rem 1.25rem',
+        alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem',
+      }}>
+        <button type="button" onClick={() => go({ name: 'how-it-works' })} style={{ background: 'none', border: 'none', color: 'var(--blue)', cursor: 'pointer', fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
+          {translations[lang].navHowItWorks}
+        </button>
+        <button type="button" onClick={() => go({ name: 'tokenize-help' })} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+          {translations[lang].navTokenize}
+        </button>
+        <button type="button" onClick={() => go({ name: 'admin' })} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+          {translations[lang].admin}
+        </button>
+        <button type="button" onClick={() => go({ name: 'subscriptions' })} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+          {translations[lang].navSubscriptions}
+        </button>
+      </footer>
     </div>
   )
 }

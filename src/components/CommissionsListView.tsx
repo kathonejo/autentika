@@ -16,23 +16,24 @@ interface Props {
   lang: Lang
   onSelect: (id: bigint) => void
   refreshKey: number
+  onOpenSubscriptions?: () => void
 }
 
-export function CommissionsListView({ lang, onSelect, refreshKey }: Props) {
+export function CommissionsListView({ lang, onSelect, refreshKey, onOpenSubscriptions }: Props) {
   const { isConnected } = useAccount()
-  if (!isConnected) return <LandingHero lang={lang} />
-  return <DashboardView lang={lang} onSelect={onSelect} refreshKey={refreshKey} t={translations[lang]} />
+  if (!isConnected) return <LandingHero lang={lang} onOpenSubscriptions={onOpenSubscriptions} />
+  return <DashboardView lang={lang} onSelect={onSelect} refreshKey={refreshKey} t={translations[lang]} onOpenSubscriptions={onOpenSubscriptions} />
 }
 
 // ── Landing hero ──────────────────────────────────────────────────────────────
-function LandingHero({ lang }: { lang: Lang }) {
+function LandingHero({ lang, onOpenSubscriptions }: { lang: Lang; onOpenSubscriptions?: () => void }) {
   const steps = [
     {
       n: '01', color: 'var(--yellow)',
       title: lang === 'es' ? 'Crea el encargo' : 'Create the commission',
       body: lang === 'es'
-        ? 'El artista define el título, monto, hitos opcionales y fecha límite en USDC.'
-        : 'The artist sets the title, USDC amount, optional milestones and deadline.',
+        ? 'El artista define el título, monto en USDC y fecha límite.'
+        : 'The artist sets the title, USDC amount and deadline.',
     },
     {
       n: '02', color: 'var(--sky)',
@@ -114,11 +115,12 @@ interface DashboardProps {
   t: typeof translations['en'] | typeof translations['es']
   onSelect: (id: bigint) => void
   refreshKey: number
+  onOpenSubscriptions?: () => void
 }
 
 type TabId = 'artist' | 'collector'
 
-function DashboardView({ lang, t, onSelect, refreshKey: _refreshKey }: DashboardProps) {
+function DashboardView({ lang, t, onSelect, refreshKey: _refreshKey, onOpenSubscriptions }: DashboardProps) {
   const { address, chainId } = useAccount()
   const readChainId = useReadChainId()
   const contractAddr = chainId !== undefined && isSupportedChain(chainId) ? getContractAddress(chainId) ?? undefined : undefined
@@ -187,6 +189,11 @@ function DashboardView({ lang, t, onSelect, refreshKey: _refreshKey }: Dashboard
           <span className="sticker" data-status="funded" style={{ transform: 'rotate(1.5deg)' }}>
             {t.bothRoles}
           </span>
+        )}
+        {onOpenSubscriptions && (
+          <button className="btn-outline" onClick={onOpenSubscriptions} style={{ marginLeft: 'auto', fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}>
+            {t.openSubscriptions}
+          </button>
         )}
       </div>
 

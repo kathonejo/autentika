@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react'
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { useState, useRef, useEffect } from 'react'
+import { useWriteContract, useWaitForTransactionReceipt, useAccount } from 'wagmi'
 import { toast } from 'sonner'
 import { KATHONEJO_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
+import { useArtistProfile, castArtistProfile } from '@/hooks/useCommissions'
 import type { Lang } from '@/i18n'
 import { translations } from '@/i18n'
-import { useAccount } from 'wagmi'
 
 interface Props {
   lang: Lang
@@ -12,30 +12,46 @@ interface Props {
   onDelivered: () => void
 }
 
-const DEFAULT_CARE = 'Store away from direct sunlight and humidity. Do not use chemical solvents.'
+const DEFAULT_TECHNIQUE_EN = 'Mixed media'
+const DEFAULT_TECHNIQUE_ES = 'Técnica mixta'
+const DEFAULT_DIMS = '—'
+const DEFAULT_CARE_EN = 'Store away from direct sunlight and humidity. Do not use chemical solvents.'
+const DEFAULT_CARE_ES = 'Evite la luz solar directa, la humedad y temperaturas extremas; limpie suavemente con un paño seco.'
+
+function todayISO(): string {
+  return new Date().toISOString().split('T')[0]
+}
 
 export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Props) {
   const t = translations[lang]
-  const { chainId } = useAccount()
+  const { address, chainId } = useAccount()
   const readChainId = chainId !== undefined && isSupportedChain(chainId) ? chainId : ARC_TESTNET_CHAIN_ID
   const contractAddr = getContractAddress(readChainId) ?? undefined
+  const { data: rawProfile } = useArtistProfile(address)
+  const profile = castArtistProfile(rawProfile)
 
   const [artworkTitle, setArtworkTitle] = useState('')
   const [artistName, setArtistName] = useState('')
-  const [technique, setTechnique] = useState('')
-  const [dimensions, setDimensions] = useState('')
-  const [creationDateStr, setCreationDateStr] = useState('')
-  const [careInstructions, setCareInstructions] = useState(DEFAULT_CARE)
+  const [technique, setTechnique] = useState(lang === 'es' ? DEFAULT_TECHNIQUE_ES : DEFAULT_TECHNIQUE_EN)
+  const [dimensions, setDimensions] = useState(DEFAULT_DIMS)
+  const [creationDateStr, setCreationDateStr] = useState(todayISO())
+  const [careInstructions, setCareInstructions] = useState(lang === 'es' ? DEFAULT_CARE_ES : DEFAULT_CARE_EN)
   const [photoUrl, setPhotoUrl] = useState('')
   const [photoHash, setPhotoHash] = useState('')
   const [hashComputed, setHashComputed] = useState(false)
   const [hashBusy, setHashBusy] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const prefilled = useRef(false)
+
+  useEffect(() => {
+    if (prefilled.current || !profile?.exists) return
+    if (profile.displayName) setArtistName(profile.displayName)
+    prefilled.current = true
+  }, [profile])
 
   const { writeContract, data: hash, isPending } = useWriteContract()
   const { isLoading: confirming } = useWaitForTransactionReceipt({ hash })
 
-  // ── Photo upload + SHA-256 ──────────────────────────────────────────────
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
@@ -46,7 +62,6 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
       const digest = await crypto.subtle.digest('SHA-256', buf)
       const hex = Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('')
       setPhotoHash('0x' + hex)
-      // If no URL set yet, use a local object URL as placeholder
       if (!photoUrl) setPhotoUrl(URL.createObjectURL(file))
       setHashComputed(true)
       toast.success(t.photoHashComputed)
@@ -57,7 +72,6 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
     }
   }
 
-  // ── Submit ──────────────────────────────────────────────────────────────
   function handleSubmit() {
     if (!contractAddr) return
     const normalHash = photoHash.startsWith('0x')
@@ -75,11 +89,11 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
       args: [
         commissionId,
         artworkTitle,
-        artistName,
-        technique,
-        dimensions,
+        artistName || profile?.displayName || 'Artist',
+        technique || (lang === 'es' ? DEFAULT_TECHNIQUE_ES : DEFAULT_TECHNIQUE_EN),
+        dimensions || DEFAULT_DIMS,
         creationDate,
-        careInstructions,
+        careInstructions || (lang === 'es' ? DEFAULT_CARE_ES : DEFAULT_CARE_EN),
         photoUrl,
         normalHash as `0x${string}`,
       ],
@@ -93,7 +107,7 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
   }
 
   const busy = isPending || confirming
-  const canSubmit = artworkTitle && artistName && technique && dimensions && photoHash.length >= 66
+  const canSubmit = !!artworkTitle && photoHash.length >= 66
 
   return (
     <div className="framed-card" style={{ padding: '1.5rem 1.25rem' }}>
@@ -102,11 +116,11 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
         <h2 className="display" style={{ color: 'var(--blue)', fontSize: '1.3rem', margin: 0 }}>
           {t.markDelivered}
         </h2>
+        <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: '0.4rem 0 0' }}>{t.deliveryFormHint}</p>
         <hr className="rule-pink" style={{ marginTop: '0.5rem' }} />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-
         <Field label={t.artworkTitle}>
           <input className="field-input" value={artworkTitle} onChange={e => setArtworkTitle(e.target.value)} placeholder="Portrait of…" />
         </Field>
@@ -117,10 +131,10 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.875rem' }}>
           <Field label={t.technique}>
-            <input className="field-input" value={technique} onChange={e => setTechnique(e.target.value)} placeholder="Oil on canvas" />
+            <input className="field-input" value={technique} onChange={e => setTechnique(e.target.value)} />
           </Field>
           <Field label={t.dimensions}>
-            <input className="field-input" value={dimensions} onChange={e => setDimensions(e.target.value)} placeholder="50 × 70 cm" />
+            <input className="field-input" value={dimensions} onChange={e => setDimensions(e.target.value)} />
           </Field>
         </div>
 
@@ -138,67 +152,39 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
           />
         </Field>
 
-        {/* ── Photo upload ──────────────────────────────────────────── */}
         <div>
           <label className="field-label">{t.uploadPhoto}</label>
           <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.5rem' }}>{t.uploadPhotoHint}</p>
-
           <input
             ref={fileRef}
             type="file"
             accept="image/*"
             capture="environment"
-            style={{ display: 'none' }}
-            onChange={e => { void handleFileChange(e) }}
+            onChange={handleFileChange}
+            style={{ fontSize: '0.85rem' }}
           />
-          <button
-            type="button"
-            className="btn-outline"
-            disabled={hashBusy}
-            onClick={() => fileRef.current?.click()}
-            style={{ width: '100%', marginBottom: '0.5rem' }}
-          >
-            {hashBusy ? t.computingHash : '📷 ' + t.uploadPhoto}
-          </button>
-
-          {hashComputed && photoHash && (
-            <div style={{
-              padding: '0.5rem 0.75rem',
-              background: 'var(--success-light)',
-              border: '1.5px solid var(--success)',
-              borderRadius: 6,
-              fontSize: '0.7rem',
-              fontFamily: 'monospace',
-              wordBreak: 'break-all',
-              color: 'var(--success)',
-              marginBottom: '0.5rem',
-            }}>
-              ✓ {t.photoHashComputed}: {photoHash.slice(0, 20)}…
-            </div>
+          {hashBusy && <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.35rem' }}>{t.computingHash}</p>}
+          {hashComputed && (
+            <p style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: 'var(--green)', marginTop: '0.35rem', wordBreak: 'break-all' }}>
+              SHA-256: {photoHash.slice(0, 18)}…
+            </p>
           )}
-
-          <p style={{ fontSize: '0.7rem', color: 'var(--muted)', marginBottom: '0.375rem' }}>{t.orManual}</p>
-          <Field label={t.photoUrl}>
-            <input className="field-input" value={photoUrl} onChange={e => setPhotoUrl(e.target.value)} placeholder="https://…" />
-          </Field>
-          <Field label={t.photoHash} hint={t.photoHashHint}>
+          <Field label={t.photoHash}>
             <input
               className="field-input"
               value={photoHash}
-              onChange={e => { setPhotoHash(e.target.value); setHashComputed(false) }}
-              placeholder="0xabc123…"
-              style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
+              onChange={e => { setPhotoHash(e.target.value); setHashComputed(e.target.value.length >= 66) }}
+              placeholder="0x…"
+              style={{ fontFamily: 'monospace', fontSize: '0.75rem' }}
             />
+          </Field>
+          <Field label={t.photoUrl}>
+            <input className="field-input" value={photoUrl} onChange={e => setPhotoUrl(e.target.value)} placeholder="https://…" />
           </Field>
         </div>
 
-        <button
-          className="btn-primary"
-          style={{ width: '100%', marginTop: '0.5rem' }}
-          disabled={busy || !canSubmit}
-          onClick={handleSubmit}
-        >
-          {busy ? t.submitting : t.submitDelivery}
+        <button className="btn-primary" style={{ width: '100%' }} disabled={busy || !canSubmit} onClick={handleSubmit}>
+          {busy ? t.confirming : t.submitDelivery}
         </button>
       </div>
     </div>
@@ -209,7 +195,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   return (
     <div>
       <label className="field-label">{label}</label>
-      {hint && <p style={{ fontSize: '0.7rem', color: 'var(--muted)', marginBottom: '0.25rem' }}>{hint}</p>}
+      {hint && <p style={{ fontSize: '0.72rem', color: 'var(--muted)', margin: '0 0 0.35rem' }}>{hint}</p>}
       {children}
     </div>
   )

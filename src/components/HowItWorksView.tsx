@@ -9,18 +9,24 @@ interface Props {
   onOpenDirectory?: () => void
 }
 
-const FEATURE_KEYS = [
+const WORKING_KEYS = [
   ['howFeatureFeedTitle', 'howFeatureFeedBody'],
   ['howFeatureDirectoryTitle', 'howFeatureDirectoryBody'],
   ['howFeatureProfileTitle', 'howFeatureProfileBody'],
   ['howFeatureWorkTitle', 'howFeatureWorkBody'],
   ['howFeatureEscrowTitle', 'howFeatureEscrowBody'],
   ['howFeatureCertTitle', 'howFeatureCertBody'],
-  ['howFeatureRoyaltyTitle', 'howFeatureRoyaltyBody'],
-  ['howFeatureLegalTitle', 'howFeatureLegalBody'],
-  ['howFeatureTokenizeTitle', 'howFeatureTokenizeBody'],
-  ['howFeaturePhysicalTitle', 'howFeaturePhysicalBody'],
   ['howFeatureSubsTitle', 'howFeatureSubsBody'],
+] as const
+
+const ROADMAP_KEYS = [
+  ['howRoadmapMilestonesTitle', 'howRoadmapMilestonesBody'],
+  ['howRoadmapResaleTitle', 'howRoadmapResaleBody'],
+  ['howRoadmapLegalTitle', 'howRoadmapLegalBody'],
+  ['howRoadmapTokenizeTitle', 'howRoadmapTokenizeBody'],
+  ['howRoadmapPhysicalTitle', 'howRoadmapPhysicalBody'],
+  ['howRoadmapShippingTitle', 'howRoadmapShippingBody'],
+  ['howRoadmapProfilesTitle', 'howRoadmapProfilesBody'],
 ] as const
 
 export function HowItWorksView({ lang, onBack, onOpenFeed, onOpenDirectory }: Props) {
@@ -85,16 +91,39 @@ export function HowItWorksView({ lang, onBack, onOpenFeed, onOpenDirectory }: Pr
         </a>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {FEATURE_KEYS.map(([titleKey, bodyKey]) => (
+      <h2 className="display" style={{ fontSize: '1.15rem', color: 'var(--blue)', margin: '0 0 0.75rem' }}>
+        {t.workingNowTitle}
+      </h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '2rem' }}>
+        {WORKING_KEYS.map(([titleKey, bodyKey]) => (
           <div key={titleKey} className="framed-card" style={{ padding: '1.1rem 1.35rem' }}>
-            <h2
-              className="display"
-              style={{ fontSize: '1.05rem', color: 'var(--blue)', margin: '0 0 0.4rem' }}
-            >
+            <h3 className="display" style={{ fontSize: '1.05rem', color: 'var(--blue)', margin: '0 0 0.4rem' }}>
               {t[titleKey]}
-            </h2>
+            </h3>
             <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'var(--ink-2)', margin: 0 }}>
+              {t[bodyKey]}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="display" style={{ fontSize: '1.15rem', color: 'var(--blue)', margin: '0 0 0.5rem' }}>
+        {t.roadmapTitle}
+      </h2>
+      <p style={{ fontSize: '0.875rem', color: 'var(--muted)', margin: '0 0 0.85rem', lineHeight: 1.55 }}>
+        {t.roadmapIntro}
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        {ROADMAP_KEYS.map(([titleKey, bodyKey]) => (
+          <div key={titleKey} className="framed-card" style={{ padding: '1.1rem 1.35rem', borderStyle: 'dashed' }}>
+            <p style={{
+              fontFamily: "'Space Grotesk', sans-serif", fontWeight: 800, textTransform: 'uppercase',
+              fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.08em', margin: '0 0 0.35rem',
+            }}>{t.roadmapBadge}</p>
+            <h3 className="display" style={{ fontSize: '1.05rem', color: 'var(--ink-2)', margin: '0 0 0.4rem' }}>
+              {t[titleKey]}
+            </h3>
+            <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'var(--muted)', margin: 0 }}>
               {t[bodyKey]}
             </p>
           </div>

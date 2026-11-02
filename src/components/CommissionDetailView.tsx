@@ -274,47 +274,16 @@ export function CommissionDetailView({ lang, commissionId, onBack, onViewCert }:
   )
 }
 
-function PhysicalFlagSection({ lang, commissionId }: { lang: Lang; commissionId: bigint }) {
+function PhysicalFlagSection({ lang }: { lang: Lang; commissionId: bigint }) {
   const t = translations[lang]
-  const dirAddr = useDirectoryContractAddress()
-  const { data: physicalRaw, refetch } = usePhysicalByCommission(commissionId)
-  const physical = physicalRaw as { accompaniesPhysical: boolean; redeemed: boolean; shipped: boolean } | undefined
-  const [checked, setChecked] = useState(!!physical?.accompaniesPhysical)
-
-  useEffect(() => {
-    if (physical) setChecked(!!physical.accompaniesPhysical)
-  }, [physical])
-
-  const { writeContract, data: hash, isPending } = useWriteContract()
-  const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash })
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success(t.physicalFlagSaved)
-      void refetch()
-    }
-  }, [isSuccess, t.physicalFlagSaved, refetch])
-
-  function save() {
-    if (!dirAddr) return
-    writeContract({
-      address: dirAddr,
-      abi: DIRECTORY_ABI,
-      functionName: 'setPhysicalForCommission',
-      args: [commissionId, checked],
-    }, { onError: e => toast.error(e.message.slice(0, 100)) })
-  }
-
   return (
-    <div className="framed-card-sm" style={{ padding: '1rem 1.25rem', marginTop: '1rem' }}>
-      <h3 className="display" style={{ fontSize: '0.95rem', color: 'var(--blue)', margin: '0 0 0.5rem' }}>{t.physicalTitle}</h3>
-      <p style={{ fontSize: '0.8rem', color: 'var(--ink-2)', margin: '0 0 0.75rem' }}>{t.physicalHint}</p>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', marginBottom: '0.75rem' }}>
-        <input type="checkbox" checked={checked} onChange={e => setChecked(e.target.checked)} />
-        {t.setPhysicalFlag}
-      </label>
-      <button className="btn-outline" style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }} disabled={isPending || confirming || !dirAddr} onClick={save}>
-        {isPending || confirming ? t.saving : t.setFee}
-      </button>
+    <div className="framed-card-sm" style={{ padding: '1rem 1.25rem', marginTop: '1rem', borderStyle: 'dashed' }}>
+      <p style={{
+        fontFamily: "'Space Grotesk', sans-serif", fontWeight: 800, textTransform: 'uppercase',
+        fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.08em', margin: '0 0 0.35rem',
+      }}>{t.roadmapBadge}</p>
+      <h3 className="display" style={{ fontSize: '0.95rem', color: 'var(--ink-2)', margin: '0 0 0.4rem' }}>{t.howRoadmapPhysicalTitle}</h3>
+      <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: 0, lineHeight: 1.5 }}>{t.howRoadmapPhysicalBody}</p>
     </div>
   )
 }
