@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { toast } from 'sonner'
 import { parseUsdc, formatUsdc } from '@/onchain-money'
@@ -31,9 +31,18 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
   const contractAddr = getContractAddress(readChainId) ?? undefined
 
   const [collector, setCollector] = useState('')
-  const [amountStr, setAmountStr] = useState('')
-  const [deadline, setDeadline] = useState('')
-  const [title, setTitle] = useState('')
+  const [amountStr, setAmountStr] = useState('0.01')
+  const [deadline, setDeadline] = useState(() => {
+    const d = new Date()
+    d.setDate(d.getDate() + 7)
+    return d.toISOString().split('T')[0]
+  })
+  const [title, setTitle] = useState('Conejos de luz')
+
+  // Prefill collector with connected wallet so create→fund can be demoed with one Rabby account
+  useEffect(() => {
+    if (address && !collector) setCollector(address)
+  }, [address, collector])
 
   const [advancedOpen, setAdvancedOpen] = useState(false)
   const [milestones, setMilestones] = useState<MilestoneRow[]>([])

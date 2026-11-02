@@ -16,6 +16,7 @@ import {
   SUBSCRIPTIONS_ABI,
   isSubscriptionsConfigured,
   ANNUAL_MONTHS,
+  DEFAULT_FEE_RECIPIENT,
 } from '@/subscriptions'
 import { getUsdcAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
 import { ArtistSubsDashboard } from '@/components/ArtistSubsDashboard'
@@ -43,8 +44,9 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
   const [tab, setTab] = useState<'deposit' | 'balance' | 'artist'>(
     address && initialArtist && address.toLowerCase() === initialArtist.toLowerCase() ? 'artist' : 'deposit',
   )
-  const [artistInput, setArtistInput] = useState(initialArtist ?? '')
-  const [amountStr, setAmountStr] = useState('')
+  const [artistInput, setArtistInput] = useState(initialArtist ?? DEFAULT_FEE_RECIPIENT)
+  const [amountStr, setAmountStr] = useState('0.01')
+  const [demoTxHash, setDemoTxHash] = useState<`0x${string}` | undefined>()
   const [planFeeStr, setPlanFeeStr] = useState('')
   const [planTitle, setPlanTitle] = useState('Club de correo')
   const [claimSub, setClaimSub] = useState('')
@@ -82,6 +84,10 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
   const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash: txHash })
 
   useEffect(() => {
+    if (txHash) setDemoTxHash(txHash)
+  }, [txHash])
+
+  useEffect(() => {
     if (error) toast.error(error.message.slice(0, 120))
   }, [error])
 
@@ -94,6 +100,24 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
       void refetchAllowance()
     }
   }, [isSuccess, t.subTxOk, refetchPlan, refetchSub, refetchClaimable, refetchAllowance])
+
+  /** Subscriptions contract undeployed: send a real 0.01 USDC transfer to the platform wallet. */
+  function doDemoSubscribeTx() {
+    if (!usdcAddr || !isConnected) return
+    const amt = parseAmt(amountStr) ?? parseUnits('0.01', 6)
+    writeContract({
+      address: usdcAddr,
+      abi: erc20Abi,
+      functionName: 'transfer',
+      args: [DEFAULT_FEE_RECIPIENT, amt],
+    }, {
+      onSuccess: (hash) => {
+        setDemoTxHash(hash)
+        toast.success(t.subTxOk)
+      },
+      onError: (e) => toast.error(e.message.slice(0, 100)),
+    })
+  }
 
   function parseAmt(s: string): bigint | null {
     try {
@@ -299,23 +323,43 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
                 className="field-input"
                 type="text"
                 inputMode="decimal"
-                placeholder="100"
+                placeholder="0.01"
                 value={amountStr}
                 onChange={e => setAmountStr(e.target.value)}
                 style={{ width: '100%', marginBottom: '0.75rem' }}
               />
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <button className="btn-primary" disabled={busy || !isConnected || !configured} onClick={() => doDeposit(false)} style={{ flex: 1 }}>
-                  {busy ? t.confirming : t.subDepositBtn}
-                </button>
-                <button className="btn-outline" disabled={busy || !isConnected || !configured} onClick={() => doDeposit(true)} style={{ flex: 1, fontSize: '0.8rem' }}>
-                  {t.subDepositAndLockBtn}
-                </button>
-              </div>
-              <button className="btn-outline" disabled={busy || !isConnected || !configured} onClick={doLockOnly}
-                style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.8rem' }}>
-                {t.subLockOnlyBtn}
-              </button>
+              {configured ? (
+                <>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <button className="btn-primary" disabled={busy || !isConnected} onClick={() => doDeposit(false)} style={{ flex: 1 }}>
+                      {busy ? t.confirming : t.subDepositBtn}
+                    </button>
+                    <button className="btn-outline" disabled={busy || !isConnected} onClick={() => doDeposit(true)} style={{ flex: 1, fontSize: '0.8rem' }}>
+                      {t.subDepositAndLockBtn}
+                    </button>
+                  </div>
+                  <button className="btn-outline" disabled={busy || !isConnected} onClick={doLockOnly}
+                    style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.8rem' }}>
+                    {t.subLockOnlyBtn}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="btn-primary"
+                    disabled={busy || !isConnected}
+                    onClick={doDemoSubscribeTx}
+                    style={{ width: '100%' }}
+                  >
+                    {busy ? t.confirming : t.subscribeCta}
+                  </button>
+                  {demoTxHash && (
+                    <p style={{ fontSize: '0.75rem', marginTop: '0.75rem', wordBreak: 'break-all', color: 'var(--ink-2)' }}>
+                      tx: {demoTxHash}
+                    </p>
+                  )}
+                </>
+              )}
             </>
           )}
 
