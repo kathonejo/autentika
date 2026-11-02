@@ -44,3 +44,23 @@ Design: Kathonejo print-studio look, bunny mascot, EN/ES. Frontend Vite + wagmi.
 
 ## Tech
 React 18, Vite, TypeScript, wagmi/viem, ConnectKit. Solidity 0.8.28, Foundry, OpenZeppelin. Arc Mainnet (5042) + Testnet. USDC. Companion contracts AutentikaDirectory + AutentikaSubscriptions (do not modify AutentikaV2).
+
+## Live mainnet demo cycle (2026-11-01 ~22:59 ART)
+
+Full AutentikaV2 cycle on Arc Mainnet with demo wallets (0.10 USDC escrow; Katherine funded collector with 1 USDC; leftovers refunded). Commission id **1**. Photo: Katherine moodboard from diario-de-dibujo.
+
+| Step | Tx |
+|------|----|
+| Gas stipend → artist | https://explorer.arc.io/tx/0xba44c58b20bfd3cb9f66edea20cc9af18c34d70fb002af869ed403fbf1dc3fbb |
+| setArtistProfile | https://explorer.arc.io/tx/0x1ffc2d4c08170b85b594725dd0eecf224f857191a835559b31f7f5c8ee96c614 |
+| createCommission (0.10 USDC) | https://explorer.arc.io/tx/0x6757df9726d2105c70eae6988b4d7add93147ca3580053d5e920d8d504ead503 |
+| approve USDC | https://explorer.arc.io/tx/0xb2907886fb8a00eead4790a42cbcf002d8c7416507e5aa51e2690ff936d8c851 |
+| **fundCommission** | https://explorer.arc.io/tx/0xf22f867b19156396415f8bf71c73d83224f78427e313bd68584b61818e1cf585 |
+| markDelivered | https://explorer.arc.io/tx/0x97897f487708bed90a4855e80b70d36172a34706daaf292079608c7120457bcd |
+| confirmReceipt (Released) | https://explorer.arc.io/tx/0x07fc8ab27d1ab78461a3683604ca0b95140d57bbb36a701f23799e9d27f81161 |
+| withdraw (0.0995 USDC net) | https://explorer.arc.io/tx/0x580b9146f54b406d1bbb8eb5a7786e92b3036ac52c983a6a6aff90212425601e |
+| Refund collector → Katherine | https://explorer.arc.io/tx/0x6b8789b9c7bed205579cde23c53944ffa24220f567faebeb04028008ed87508d |
+| Refund artist → Katherine | https://explorer.arc.io/tx/0x08f5b1330820795e0cd56ba3c62a9436e8b301485c5f685a71cad0db654f6b59 |
+
+Certificate NFT id on commission 1: see explorer / app feed after confirm. AutentikaV2 untouched (no redeploy). Directory/Subscriptions not deployed in this step.
+

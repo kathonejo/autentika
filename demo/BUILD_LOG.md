@@ -67,3 +67,15 @@ All times America/Buenos_Aires (UTC-3).
 - Header primary (max 5): Feed, Directorio, Encargos, Crear, Perfil. Cómo funciona / Tokenizar / Admin / Suscripciones in footer + mobile “Más”. Suscripciones entry from Encargos.
 - Profile: clear **Soy artista** path — Directory first; V2 seal/signature optional in same view.
 - `#/como-funciona` + README + DoraHacks borrador: working now vs roadmap (honest). AutentikaV2 mainnet untouched.
+
+## 2026-11-01 (~22:59 ART) — Live mainnet demo cycle (0.10 USDC)
+- Katherine funded collector `0xa586…Ad0E` with 1 USDC on Arc mainnet; cycle used **0.10 USDC** escrow (contract min is only `amount != 0`).
+- Full path on AutentikaV2 `0xEeD7…d7D4`: gas→artist, profile, create, approve, **fund**, deliver, confirm, withdraw; leftovers refunded to feeRecipient/Katherine `0x21e5…2D79`.
+- **fundCommission:** https://explorer.arc.io/tx/0xf22f867b19156396415f8bf71c73d83224f78427e313bd68584b61818e1cf585
+- create: https://explorer.arc.io/tx/0x6757df9726d2105c70eae6988b4d7add93147ca3580053d5e920d8d504ead503
+- confirmReceipt: https://explorer.arc.io/tx/0x07fc8ab27d1ab78461a3683604ca0b95140d57bbb36a701f23799e9d27f81161
+- withdraw: https://explorer.arc.io/tx/0x580b9146f54b406d1bbb8eb5a7786e92b3036ac52c983a6a6aff90212425601e
+- refund collector: https://explorer.arc.io/tx/0x6b8789b9c7bed205579cde23c53944ffa24220f567faebeb04028008ed87508d
+- refund artist: https://explorer.arc.io/tx/0x08f5b1330820795e0cd56ba3c62a9436e8b301485c5f685a71cad0db654f6b59
+- Photo: diario-de-dibujo moodboard 2026-10-31. Scripts stay off-repo under box demo wallets (no keys committed).
+

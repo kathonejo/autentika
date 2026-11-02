@@ -106,6 +106,19 @@ Anyone can verify on the [Arc explorer](https://explorer.arc.io/address/0xEeD7B7
 
 Also: EN/ES; hash routes (`#/feed`, `#/directorio`, `#/encargos`, `#/suscripciones`, `#/como-funciona`, …); Admin deploy cards for Directory + Subscriptions (graceful degrade until env set). Primary nav (max 5): Feed, Directorio, Encargos, Crear, Perfil.
 
+
+## Live Arc Mainnet demo (2026-11-01)
+
+End-to-end AutentikaV2 commission **#1** for **0.10 USDC** (create → approve → fund → deliver → confirm → withdraw). Leftover demo funds returned to Katherine.
+
+- **fundCommission:** https://explorer.arc.io/tx/0xf22f867b19156396415f8bf71c73d83224f78427e313bd68584b61818e1cf585
+- createCommission: https://explorer.arc.io/tx/0x6757df9726d2105c70eae6988b4d7add93147ca3580053d5e920d8d504ead503
+- confirmReceipt: https://explorer.arc.io/tx/0x07fc8ab27d1ab78461a3683604ca0b95140d57bbb36a701f23799e9d27f81161
+- withdraw: https://explorer.arc.io/tx/0x580b9146f54b406d1bbb8eb5a7786e92b3036ac52c983a6a6aff90212425601e
+- Refunds: https://explorer.arc.io/tx/0x6b8789b9c7bed205579cde23c53944ffa24220f567faebeb04028008ed87508d · https://explorer.arc.io/tx/0x08f5b1330820795e0cd56ba3c62a9436e8b301485c5f685a71cad0db654f6b59
+
+Contract: [`0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4`](https://explorer.arc.io/address/0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4). App: https://autentika-app.vercel.app
+
 ## Future features / what this grant would unlock (roadmap)
 
 Contract hooks may already exist for some of these; **they are not presented as finished product in the UI**. A grant funds real shipping research and finishing the half-built surfaces:
