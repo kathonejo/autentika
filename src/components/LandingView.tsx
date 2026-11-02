@@ -1,6 +1,5 @@
 import { translations } from '@/i18n'
 import type { Lang } from '@/i18n'
-import { BunnyLogo } from './BunnyLogo'
 
 interface Props {
   lang: Lang
@@ -175,36 +174,35 @@ export function LandingView({ lang, onOpenComisiones, onOpenMailClubs, onOpenDir
 
   return (
     <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '1.75rem 1rem 2rem' }}>
-      {/* Hero */}
-      <section
-        style={{
-          textAlign: 'center',
-          marginBottom: '2rem',
-          padding: '1.25rem 1rem 1.5rem',
-          borderRadius: '12px',
-          border: '2.5px solid var(--blue)',
-          background: 'linear-gradient(160deg, var(--yellow) 0%, var(--bg-alt) 42%, var(--sky) 100%)',
-          boxShadow: '0 0 0 4px var(--pink)',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.65rem' }}>
-          <BunnyLogo size={56} />
-        </div>
-        <h1 className="poster" style={{ fontSize: 'clamp(1.6rem, 4vw, 2.25rem)', color: 'var(--blue)', margin: 0 }}>
-          {t.landingTitle}
-        </h1>
-        <p
+      {/* Hero banner + CTAs */}
+      <section style={{ marginBottom: '2rem' }}>
+        <div
           style={{
-            margin: '0.55rem auto 0',
-            maxWidth: '36rem',
-            fontSize: '0.95rem',
-            lineHeight: 1.55,
-            color: 'var(--ink-2)',
-            fontFamily: "'Inter', sans-serif",
+            width: '100%',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            border: '2px solid var(--blue)',
+            background: 'var(--bg-alt)',
+            lineHeight: 0,
           }}
         >
-          {t.landingSubtitle}
-        </p>
+          <img
+            src="/landing-banner.webp"
+            alt="Autentika: enviá arte y cartas al mundo y cobrá seguro en USDC en Arc"
+            width={1600}
+            height={898}
+            decoding="async"
+            style={{
+              width: '100%',
+              height: 'auto',
+              aspectRatio: '16 / 9',
+              objectFit: 'contain',
+              objectPosition: 'center',
+              display: 'block',
+              background: 'var(--bg-alt)',
+            }}
+          />
+        </div>
 
         <div
           style={{
@@ -212,7 +210,7 @@ export function LandingView({ lang, onOpenComisiones, onOpenMailClubs, onOpenDir
             flexWrap: 'wrap',
             gap: '0.85rem',
             justifyContent: 'center',
-            marginTop: '1.35rem',
+            marginTop: '1.25rem',
           }}
         >
           <button
