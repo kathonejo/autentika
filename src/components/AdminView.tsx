@@ -7,10 +7,16 @@ import {
   usePlatformFeeBps, usePlatformResaleBps, useFeeRecipient, useContractOwner,
   useReadChainId,
 } from '@/hooks/useCommissions'
-import { KATHONEJO_ABI, getContractAddress } from '@/contract'
+import { KATHONEJO_ABI, getContractAddress, getUsdcAddress, isSupportedChain } from '@/contract'
 import { AUTENTIKA_DIRECTORY_ABI } from '@/deploy/autentikaDirectoryAbi'
 import { AUTENTIKA_DIRECTORY_BYTECODE } from '@/deploy/autentikaDirectoryBytecode'
 import { getDirectoryAddress, setStoredDirectoryAddress, isDirectoryConfigured } from '@/directory'
+import { AUTENTIKA_SUBSCRIPTIONS_ABI } from '@/deploy/autentikaSubscriptionsAbi'
+import { AUTENTIKA_SUBSCRIPTIONS_BYTECODE } from '@/deploy/autentikaSubscriptionsBytecode'
+import {
+  getSubscriptionsAddress, setStoredSubscriptionsAddress, isSubscriptionsConfigured,
+  DEFAULT_FEE_RECIPIENT,
+} from '@/subscriptions'
 
 interface AdminViewProps {
   lang: Lang
@@ -152,6 +158,101 @@ function DirectoryDeployCard({ lang }: { lang: Lang }) {
   )
 }
 
+
+function SubscriptionsDeployCard({ lang }: { lang: Lang }) {
+  const t = translations[lang]
+  const { address } = useAccount()
+  const chainId = useReadChainId()
+  const usdc = isSupportedChain(chainId) ? getUsdcAddress(chainId) : undefined
+  const feeFromV2 = useFeeRecipient()
+  const feeRecipient = (typeof feeFromV2.data === 'string' && /^0x[0-9a-fA-F]{40}$/.test(feeFromV2.data)
+    ? feeFromV2.data
+    : DEFAULT_FEE_RECIPIENT) as `0x${string}`
+  const [paste, setPaste] = useState('')
+  const [current, setCurrent] = useState<string | null>(() => getSubscriptionsAddress(chainId))
+
+  useEffect(() => {
+    setCurrent(getSubscriptionsAddress(chainId))
+  }, [chainId])
+
+  const { deployContract, data: deployHash, isPending, error } = useDeployContract()
+  const { data: receipt, isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash: deployHash })
+
+  useEffect(() => {
+    if (isSuccess && receipt?.contractAddress) {
+      const addr = receipt.contractAddress as `0x${string}`
+      setStoredSubscriptionsAddress(addr)
+      setCurrent(addr)
+      toast.success(`${t.subscriptionsAddrSaved}: ${addr}`)
+    }
+  }, [isSuccess, receipt, t.subscriptionsAddrSaved])
+
+  useEffect(() => {
+    if (error) toast.error(error.message.slice(0, 120))
+  }, [error])
+
+  function deploy() {
+    if (!usdc || !address) {
+      toast.error('USDC or wallet missing')
+      return
+    }
+    deployContract({
+      abi: AUTENTIKA_SUBSCRIPTIONS_ABI,
+      bytecode: AUTENTIKA_SUBSCRIPTIONS_BYTECODE,
+      args: [usdc, address, feeRecipient],
+    })
+  }
+
+  function savePaste() {
+    const raw = paste.trim()
+    if (!/^0x[0-9a-fA-F]{40}$/.test(raw)) {
+      toast.error('Invalid address')
+      return
+    }
+    setStoredSubscriptionsAddress(raw as `0x${string}`)
+    setCurrent(raw)
+    toast.success(t.subscriptionsAddrSaved)
+  }
+
+  return (
+    <div className="framed-card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
+      <h2 className="display" style={{ fontSize: '1.1rem', color: 'var(--blue)', margin: '0 0 0.5rem' }}>
+        {t.deploySubscriptionsTitle}
+      </h2>
+      <p style={{ fontSize: '0.85rem', color: 'var(--ink-2)', margin: '0 0 1rem', lineHeight: 1.5 }}>
+        {t.deploySubscriptionsHint}
+      </p>
+      {current && (
+        <p style={{ fontSize: '0.8rem', fontFamily: 'monospace', wordBreak: 'break-all', color: 'var(--muted)', marginBottom: '0.75rem' }}>
+          {current}
+          {isSubscriptionsConfigured(chainId) ? ' ✓' : ''}
+        </p>
+      )}
+      <button
+        className="btn-primary"
+        style={{ width: '100%', marginBottom: '0.75rem' }}
+        disabled={isPending || confirming || !usdc || !address}
+        onClick={deploy}
+      >
+        {isPending || confirming ? t.deployingSubscriptions : t.deploySubscriptionsBtn}
+      </button>
+      <label className="field-label">{t.pasteSubscriptionsAddr}</label>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <input
+          className="field-input"
+          placeholder="0x…"
+          value={paste}
+          onChange={e => setPaste(e.target.value)}
+          style={{ flex: 1, minWidth: '200px' }}
+        />
+        <button className="btn-outline" onClick={savePaste} style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}>
+          Set
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function AdminView({ lang, onBack }: AdminViewProps) {
   const t = translations[lang]
   const { address } = useAccount()
@@ -229,6 +330,8 @@ export function AdminView({ lang, onBack }: AdminViewProps) {
       </div>
 
       <DirectoryDeployCard lang={lang} />
+
+      <SubscriptionsDeployCard lang={lang} />
 
       {!isOwner ? (
         <div className="framed-card" style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--muted)' }}>

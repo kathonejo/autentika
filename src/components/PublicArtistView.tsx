@@ -16,9 +16,10 @@ interface Props {
   onBack: () => void
   onOpenWork: (tokenId: bigint) => void
   onOpenCommission: (id: bigint) => void
+  onSubscribe?: (artist: `0x${string}`) => void
 }
 
-export function PublicArtistView({ lang, artist, onBack, onOpenCommission }: Props) {
+export function PublicArtistView({ lang, artist, onBack, onOpenCommission, onSubscribe }: Props) {
   const t = translations[lang]
   const { address, isConnected } = useAccount()
   const chainId = useReadChainId()
@@ -124,6 +125,17 @@ export function PublicArtistView({ lang, artist, onBack, onOpenCommission }: Pro
           )}
           {listing?.pitch && <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: 'var(--muted)' }}>{listing.pitch}</p>}
         </div>
+      )}
+
+      
+      {onSubscribe && (
+        <button
+          className="btn-primary"
+          onClick={() => onSubscribe(artist)}
+          style={{ width: '100%', marginBottom: '1rem' }}
+        >
+          {t.subscribeCta}
+        </button>
       )}
 
       <div className="framed-card" style={{ padding: '1.25rem', marginBottom: '1.25rem' }}>

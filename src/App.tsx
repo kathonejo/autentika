@@ -15,6 +15,7 @@ import { PublicArtistView } from './components/PublicArtistView'
 import { WorkView } from './components/WorkView'
 import { TokenizeHelpView } from './components/TokenizeHelpView'
 import { HowItWorksView } from './components/HowItWorksView'
+import { SubscriptionsView } from './components/SubscriptionsView'
 import { parseHashView, hashForView, type HashView } from '@/lib/hashRoute'
 
 export type View = HashView
@@ -57,6 +58,7 @@ export default function App() {
     else if (name === 'admin') go({ name: 'admin' })
     else if (name === 'tokenize-help') go({ name: 'tokenize-help' })
     else if (name === 'how-it-works') go({ name: 'how-it-works' })
+    else if (name === 'subscriptions') go({ name: 'subscriptions' })
     else if (name === 'commissions') go({ name: 'commissions' })
     else go({ name: 'feed' })
   }
@@ -64,7 +66,7 @@ export default function App() {
   const currentViewName =
     view.name === 'detail' || view.name === 'cert' || view.name === 'legalize-help'
       || view.name === 'work' || view.name === 'artist' || view.name === 'tokenize-help'
-      || view.name === 'how-it-works'
+      || view.name === 'how-it-works' || view.name === 'subscriptions'
       ? (view.name === 'how-it-works' || view.name === 'tokenize-help'
           ? view.name
           : (view.name === 'work' || view.name === 'artist' ? 'feed' : 'commissions'))
@@ -107,6 +109,7 @@ export default function App() {
             onBack={() => go({ name: 'directory' })}
             onOpenWork={(tokenId) => go({ name: 'work', tokenId })}
             onOpenCommission={(id) => go({ name: 'detail', id })}
+            onSubscribe={(addr) => go({ name: 'subscriptions', artist: addr })}
           />
         )}
 
@@ -130,6 +133,14 @@ export default function App() {
             onBack={() => go({ name: 'feed' })}
             onOpenFeed={() => go({ name: 'feed' })}
             onOpenDirectory={() => go({ name: 'directory' })}
+          />
+        )}
+
+        {view.name === 'subscriptions' && (
+          <SubscriptionsView
+            lang={lang}
+            onBack={() => go({ name: 'feed' })}
+            initialArtist={view.artist}
           />
         )}
 

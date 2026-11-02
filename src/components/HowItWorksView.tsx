@@ -20,6 +20,7 @@ const FEATURE_KEYS = [
   ['howFeatureLegalTitle', 'howFeatureLegalBody'],
   ['howFeatureTokenizeTitle', 'howFeatureTokenizeBody'],
   ['howFeaturePhysicalTitle', 'howFeaturePhysicalBody'],
+  ['howFeatureSubsTitle', 'howFeatureSubsBody'],
 ] as const
 
 export function HowItWorksView({ lang, onBack, onOpenFeed, onOpenDirectory }: Props) {

@@ -14,7 +14,9 @@ interface HeaderProps {
   onToggleMenu: () => void
 }
 
-const NAV_ITEMS = ['feed', 'directory', 'how-it-works', 'commissions', 'create', 'profile', 'tokenize-help', 'admin'] as const
+const PRIMARY_NAV = ['feed', 'directory', 'subscriptions', 'how-it-works', 'commissions'] as const
+const MORE_NAV = ['create', 'profile', 'tokenize-help', 'admin'] as const
+const NAV_ITEMS = [...PRIMARY_NAV, ...MORE_NAV] as const
 type NavItem = typeof NAV_ITEMS[number]
 
 function navLabel(item: NavItem, t: typeof translations[Lang]) {
@@ -23,6 +25,7 @@ function navLabel(item: NavItem, t: typeof translations[Lang]) {
   if (item === 'commissions') return t.myCommissions
   if (item === 'create') return t.newCommission
   if (item === 'profile') return t.artistProfile
+  if (item === 'subscriptions') return t.navSubscriptions
   if (item === 'how-it-works') return t.navHowItWorks
   if (item === 'tokenize-help') return t.navTokenize
   return t.admin
@@ -73,7 +76,7 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
 
           <nav style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', overflowX: 'auto' }}
                className="hidden-mobile">
-            {NAV_ITEMS.map(item => (
+            {PRIMARY_NAV.map(item => (
               <button
                 key={item}
                 onClick={() => onNavigate(item)}

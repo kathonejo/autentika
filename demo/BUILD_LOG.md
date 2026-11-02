@@ -50,3 +50,11 @@ All times America/Buenos_Aires (UTC-3).
 - AutentikaDirectory MAX_REQUEST_BYTES changed to 280 (not yet deployed; admin bytecode regenerated). Tests, UI counter/copy, README, BUILD_LOG updated.
 - New `#/como-funciona` page: plain-language feature guide + “why blockchain” (public verifiability on Arc explorer).
 - Work page: “Verified on blockchain” block with explorer links (contract, NFT token, payment tx when present).
+
+## AutentikaSubscriptions (club de correo)
+- Standalone USDC companion (does not modify AutentikaV2). Overcollateral deposits; claim one fee / 30d; platform fee 0.5% (max 2%) to live feeRecipient `0x21e5…`.
+- **Plan anual: 12 meses, 10% de descuento** (`lockMonths` requires `months == 12`).
+- Foundry: 11/11 AutentikaSubscriptionsTest pass.
+- Admin third Deploy card + `VITE_AUTENTIKA_SUBSCRIPTIONS_ADDRESS` graceful degrade.
+- UI `#/suscripciones` (Depositar+lock / Mi saldo / Vista artista) + Suscribirme on artist profiles; shipping note off-chain.
+- Nav simplified (kondo): primary Feed, Artists, Suscripciones, Cómo funciona, Encargos.

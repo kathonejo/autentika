@@ -42,12 +42,16 @@ Live app: https://autentika-app.vercel.app
 | Public artist profile + 280-char request | https://autentika-app.vercel.app/#/artista/<address> |
 | Individual work | https://autentika-app.vercel.app/#/obra/<tokenId> |
 | How it works / Why blockchain | https://autentika-app.vercel.app/#/como-funciona |
+| Subscriptions / mail club | https://autentika-app.vercel.app/#/suscripciones |
 | Tokenize / ERC-3643 help | https://autentika-app.vercel.app/#/tokenizar |
-| Admin (deploy AutentikaDirectory) | https://autentika-app.vercel.app/#/admin |
+| Admin (deploy Directory + Subscriptions) | https://autentika-app.vercel.app/#/admin |
 
 Companion contract **AutentikaDirectory** (artist registry, ≤280-byte commission requests, one-time physical redemption) is deployed by Katherine from Admin → Deploy AutentikaDirectory (signs in Rabby). Set `VITE_AUTENTIKA_DIRECTORY_ADDRESS` after deploy. Until then the feed/directory/profiles still work from AutentikaV2; request/redeem buttons degrade gracefully.
 
+Companion contract **AutentikaSubscriptions** (club de correo: overcollateral USDC deposits, monthly claims, **Plan anual: 12 meses, 10% de descuento**) is deployed from Admin → Deploy AutentikaSubscriptions. Set `VITE_AUTENTIKA_SUBSCRIPTIONS_ADDRESS` after deploy; UI degrades gracefully until then. Shipping address is off-chain.
+
 | AutentikaDirectory | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
+| AutentikaSubscriptions | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
   
 Arc Studio project: https://studio.arc.io/app/1f88626c-4f19-4071-ba8c-b2671ea2fa56
 
@@ -109,6 +113,9 @@ The certificate is already an ERC-721 NFT. ERC-3643 (T-REX) is for permissioned 
 ### Physical artwork, redeemable once
 The artist can mark that the NFT accompanies a physical piece. Only the current NFT holder can redeem it, and only once; then the artist marks it shipped (AutentikaDirectory). **Value:** digital certificate and physical delivery stay linked without double-claims.
 
+### Mail club / subscriptions (AutentikaSubscriptions)
+Collectors deposit USDC ahead of an artist’s monthly fee; the artist claims one fee per 30-day period (0.5% platform fee, owner-configurable, max 2%). **Plan anual: 12 meses, 10% de descuento** — locking 12 months of discounted fees. Cancel stops after the current period; free balance can be withdrawn. Shipping address is collected off-chain. **Value:** recurring support without modifying AutentikaV2 escrow.
+
 ### Why blockchain? Public verifiability
 Anyone can open the [Arc explorer](https://explorer.arc.io/address/0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4) and verify — **without trusting Autentika** — who made the work, when it was commissioned, who paid in USDC, and the ownership history. That proof cannot be erased or forged. It raises the value and trust of the work, and protects artists against copies. In the app: **Cómo funciona** (`#/como-funciona`) and a **Verificado en blockchain** block on each work/certificate page with explorer links (contract, NFT token, payment tx when available).
 
@@ -128,5 +135,6 @@ Autentika conecta artistas y coleccionistas con encargos en USDC en escrow sobre
 - **Legalización:** hash de un documento legal apuntando a la misma pieza.
 - **Tokenización / ERC-3643:** el certificado ya es ERC-721; ERC-3643 es para security tokens con KYC — Autentika no afirma ese cumplimiento.
 - **Obra física redimible una vez:** solo el titular del NFT puede reclamarla, una sola vez.
+- **Club de correo / suscripciones:** depósitos USDC overcollateral; cobro mensual; **Plan anual: 12 meses, 10% de descuento**. Envío off-chain.
 
 **¿Por qué blockchain?** Cualquiera puede chequear en el explorador de Arc — sin confiar en Autentika — quién hizo la obra, cuándo, quién pagó en USDC y el historial de dueños. Esa prueba no se borra ni se falsifica: sube el valor y la confianza, y protege al artista frente a copias.
