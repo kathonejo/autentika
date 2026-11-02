@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { ConnectKitButton } from 'connectkit'
 import { useAccount, useSwitchChain } from 'wagmi'
 import { translations } from '@/i18n'
@@ -33,12 +34,29 @@ function navLabel(item: NavItem, t: typeof translations[Lang]) {
 
 export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, onToggleMenu }: HeaderProps) {
   const t = translations[lang]
-  const { chainId } = useAccount()
-  const { switchChain } = useSwitchChain()
+  const { address, chainId, isConnected } = useAccount()
+  const { switchChain, isPending: isSwitching } = useSwitchChain()
+  const promptedRef = useRef<string | null>(null)
 
   const isWrongNetwork = chainId !== undefined && !isSupportedChain(chainId)
   const isTestnet = chainId === ARC_TESTNET_CHAIN_ID
   const isMainnet = chainId === ARC_MAINNET_CHAIN_ID
+
+  // After a successful connect on a non-Arc chain, prompt the wallet once to
+  // add/switch to Arc mainnet (5042). wallet_switchEthereumChain → 4902 →
+  // wallet_addEthereumChain is handled by wagmi/viem.
+  useEffect(() => {
+    if (!isConnected || !address || chainId === undefined) return
+    if (isSupportedChain(chainId)) return
+    if (isSwitching) return
+    if (promptedRef.current === address) return
+    promptedRef.current = address
+    try {
+      switchChain({ chainId: ARC_MAINNET_CHAIN_ID })
+    } catch {
+      /* user may reject; Cambiar Red CTA remains */
+    }
+  }, [isConnected, address, chainId, isSwitching, switchChain])
 
   return (
     <>
@@ -141,7 +159,7 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
               <button
                 className="btn-outline hidden-mobile"
                 style={{ fontSize: '0.75rem', padding: '0.3rem 0.8rem' }}
-                onClick={() => switchChain({ chainId: ARC_TESTNET_CHAIN_ID })}
+                onClick={() => switchChain({ chainId: ARC_MAINNET_CHAIN_ID })}
               >
                 {t.switchNetwork}
               </button>
@@ -239,7 +257,7 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
         )}
         {isWrongNetwork && (
           <button className="btn-outline" style={{ width: '100%', marginBottom: '0.5rem' }}
-            onClick={() => { switchChain({ chainId: ARC_TESTNET_CHAIN_ID }); onToggleMenu() }}>
+            onClick={() => { switchChain({ chainId: ARC_MAINNET_CHAIN_ID }); onToggleMenu() }}>
             {t.switchNetwork}
           </button>
         )}
