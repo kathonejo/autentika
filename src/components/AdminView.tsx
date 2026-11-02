@@ -7,7 +7,7 @@ import {
   usePlatformFeeBps, usePlatformResaleBps, useFeeRecipient, useContractOwner,
   useReadChainId,
 } from '@/hooks/useCommissions'
-import { KATHONEJO_ABI, getContractAddress, getUsdcAddress, isSupportedChain } from '@/contract'
+import { AUTENTIKA_V2_ABI, getContractAddress, getUsdcAddress, isSupportedChain } from '@/contract'
 import { AUTENTIKA_DIRECTORY_ABI } from '@/deploy/autentikaDirectoryAbi'
 import { AUTENTIKA_DIRECTORY_BYTECODE } from '@/deploy/autentikaDirectoryBytecode'
 import { getDirectoryAddress, setStoredDirectoryAddress, isDirectoryConfigured } from '@/directory'
@@ -279,7 +279,7 @@ export function AdminView({ lang, onBack }: AdminViewProps) {
     if (!contractAddr) return
     writeContract({
       address: contractAddr,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'setPlatformFeeBps',
       args: [bps],
     }, {
@@ -292,7 +292,7 @@ export function AdminView({ lang, onBack }: AdminViewProps) {
     if (!contractAddr) return
     writeContract2({
       address: contractAddr,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'setPlatformResaleBps',
       args: [bps],
     }, {
@@ -305,7 +305,7 @@ export function AdminView({ lang, onBack }: AdminViewProps) {
     if (!contractAddr || !recipientInput) return
     writeContract3({
       address: contractAddr,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'setFeeRecipient',
       args: [recipientInput as `0x${string}`],
     }, {

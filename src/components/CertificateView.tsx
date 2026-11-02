@@ -4,7 +4,7 @@ import { erc20Abi } from 'viem'
 import { toast } from 'sonner'
 import { formatAmount, parseAmount, parseUsdc } from '@/onchain-money'
 import {
-  usdcAmount, KATHONEJO_ABI,
+  usdcAmount, AUTENTIKA_V2_ABI,
   isSupportedChain, getContractAddress, getUsdcAddress, getExplorerBase,
   ARC_TESTNET_CHAIN_ID,
 } from '@/contract'
@@ -123,7 +123,7 @@ export function CertificateView({ lang, certId, onBack, onLegalizeHelp }: Props)
     const price = transferPrice ? parseAmount(readChainId, transferPrice).raw : 0n
     writeContract({
       address: contractAddr,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'transferCertificate',
       args: [certIdHex, newOwner as `0x${string}`, price],
     })
@@ -132,13 +132,13 @@ export function CertificateView({ lang, certId, onBack, onLegalizeHelp }: Props)
   function listCertificate() {
     if (!contractAddr || tokenId === undefined || !listPrice) return
     const price = parseUsdc(listPrice)
-    writeContract2({ address: contractAddr, abi: KATHONEJO_ABI, functionName: 'listCertificate', args: [tokenId, price] },
+    writeContract2({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: 'listCertificate', args: [tokenId, price] },
       { onError: e => toast.error((e as Error).message.slice(0, 80)) })
   }
 
   function cancelListing() {
     if (!contractAddr || tokenId === undefined) return
-    writeContract2({ address: contractAddr, abi: KATHONEJO_ABI, functionName: 'cancelListing', args: [tokenId] },
+    writeContract2({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: 'cancelListing', args: [tokenId] },
       { onSuccess: () => { toast.success(t.listingCancelled); void refetchListing() }, onError: e => toast.error((e as Error).message.slice(0, 80)) })
   }
 
@@ -154,14 +154,14 @@ export function CertificateView({ lang, certId, onBack, onLegalizeHelp }: Props)
 
   function purchaseCertificate() {
     if (!contractAddr || tokenId === undefined) return
-    writeContract2({ address: contractAddr, abi: KATHONEJO_ABI, functionName: 'purchaseCertificate', args: [tokenId] },
+    writeContract2({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: 'purchaseCertificate', args: [tokenId] },
       { onSuccess: () => { toast.success(t.purchased); void refetch(); void refetchListing() }, onError: e => toast.error((e as Error).message.slice(0, 80)) })
   }
 
   function legalize() {
     if (!contractAddr || tokenId === undefined || !legalDocHash) return
     const padded = (legalDocHash.startsWith('0x') ? legalDocHash : '0x' + legalDocHash).padEnd(66, '0')
-    writeContract3({ address: contractAddr, abi: KATHONEJO_ABI, functionName: 'legalize', args: [tokenId, padded as `0x${string}`, legalNote] },
+    writeContract3({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: 'legalize', args: [tokenId, padded as `0x${string}`, legalNote] },
       { onError: e => toast.error((e as Error).message.slice(0, 80)) })
   }
 

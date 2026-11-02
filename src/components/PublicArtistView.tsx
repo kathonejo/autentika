@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { useArtistProfile, castArtistProfile, useArtistCommissions, useReadChainId, castCommission } from '@/hooks/useCommissions'
 import { useArtistListing, useDirectoryContractAddress } from '@/hooks/useDirectory'
 import { DIRECTORY_ABI, MAX_REQUEST_CHARS, isDirectoryConfigured } from '@/directory'
-import { KATHONEJO_ABI, getContractAddress, usdcAmount, type CommissionData, CommissionStatus } from '@/contract'
+import { AUTENTIKA_V2_ABI, getContractAddress, usdcAmount, type CommissionData, CommissionStatus } from '@/contract'
 import { artistSharePath } from '@/lib/hashRoute'
 import { translations } from '@/i18n'
 import type { Lang } from '@/i18n'
@@ -34,7 +34,7 @@ export function PublicArtistView({ lang, artist, onBack, onOpenCommission, onSub
 
   const commissionReads = useMemo(() => commissionIds.map(id => ({
     address: autentika as `0x${string}`,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCommission' as const,
     args: [id] as const,
     chainId,
@@ -143,7 +143,7 @@ export function PublicArtistView({ lang, artist, onBack, onOpenCommission, onSub
         <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: '0 0 0.75rem' }}>{t.requestCommissionHint}</p>
 
         {!isDirectoryConfigured() && (
-          <p style={{ fontSize: '0.85rem', color: 'var(--warning)', margin: 0 }}>{t.directoryNotDeployed}</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--warning)', margin: 0 }}>{t.comingSoon}</p>
         )}
 
         {isDirectoryConfigured() && !listing?.registered && (

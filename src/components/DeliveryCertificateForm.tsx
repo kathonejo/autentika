@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useWriteContract, useWaitForTransactionReceipt, useAccount } from 'wagmi'
 import { toast } from 'sonner'
-import { KATHONEJO_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
+import { AUTENTIKA_V2_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
 import { useArtistProfile, castArtistProfile } from '@/hooks/useCommissions'
 import type { Lang } from '@/i18n'
 import { translations } from '@/i18n'
@@ -84,7 +84,7 @@ export function DeliveryCertificateForm({ lang, commissionId, onDelivered }: Pro
 
     writeContract({
       address: contractAddr,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'markDelivered',
       args: [
         commissionId,

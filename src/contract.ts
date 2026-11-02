@@ -15,7 +15,7 @@ export function isSupportedChain(id: number): id is SupportedChainId {
 
 // ─── Per-network contract addresses ─────────────────────────────────────────
 // AutentikaV2 (Arc Studio build) on Arc Testnet + Arc Mainnet.
-// Mainnet: deployed 2026-11-01 by Katherine via /admin (Rabby). Env can override.
+// Mainnet: deployed 2026-11-01 via /admin (Rabby). Env can override.
 // Do not point at the older pre-Arc-Studio V2 (0xc84b92fd…4426).
 const MAINNET_DEPLOYED: `0x${string}` = '0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4'
 function readMainnetAddress(): `0x${string}` {
@@ -33,7 +33,7 @@ export function getContractAddress(chainId: SupportedChainId): `0x${string}` | n
   return CONTRACT_ADDRESSES[chainId] ?? null;
 }
 
-export const KATHONEJO_ABI = artifact.abi;
+export const AUTENTIKA_V2_ABI = artifact.abi;
 
 // ─── USDC per network ────────────────────────────────────────────────────────
 export function getUsdcAddress(chainId: SupportedChainId): `0x${string}` {

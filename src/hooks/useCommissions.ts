@@ -1,6 +1,6 @@
 import { useReadContract, useChainId } from 'wagmi'
 import {
-  KATHONEJO_ABI,
+  AUTENTIKA_V2_ABI,
   ARC_TESTNET_CHAIN_ID,
   isSupportedChain,
   getContractAddress,
@@ -30,7 +30,7 @@ export function useArtistCommissions(artist: `0x${string}` | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getArtistCommissions',
     args: artist ? [artist] : undefined,
     chainId,
@@ -43,7 +43,7 @@ export function useCollectorCommissions(collector: `0x${string}` | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCollectorCommissions',
     args: collector ? [collector] : undefined,
     chainId,
@@ -56,7 +56,7 @@ export function useCommission(id: bigint | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCommission',
     args: id !== undefined ? [id] : undefined,
     chainId,
@@ -70,7 +70,7 @@ export function useCertificate(id: `0x${string}` | undefined) {
   const isZero = !id || id === '0x0000000000000000000000000000000000000000000000000000000000000000'
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCertificate',
     args: id ? [id] : undefined,
     chainId,
@@ -83,7 +83,7 @@ export function usePendingWithdrawal(addr: `0x${string}` | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'pendingWithdrawals',
     args: addr ? [addr] : undefined,
     chainId,
@@ -96,7 +96,7 @@ export function useArtistProfile(artist: `0x${string}` | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getArtistProfile',
     args: artist ? [artist] : undefined,
     chainId,
@@ -109,7 +109,7 @@ export function useMilestones(commissionId: bigint | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getMilestones',
     args: commissionId !== undefined ? [commissionId] : undefined,
     chainId,
@@ -123,7 +123,7 @@ export function useCertTokenId(certId: `0x${string}` | undefined) {
   const isZero = !certId || certId === '0x0000000000000000000000000000000000000000000000000000000000000000'
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'certTokenId',
     args: certId ? [certId] : undefined,
     chainId,
@@ -136,7 +136,7 @@ export function useActiveListing(tokenId: bigint | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getActiveListing',
     args: tokenId !== undefined ? [tokenId] : undefined,
     chainId,
@@ -149,7 +149,7 @@ export function useLegalRecord(tokenId: bigint | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'legalRecords',
     args: tokenId !== undefined ? [tokenId] : undefined,
     chainId,
@@ -162,7 +162,7 @@ export function useTokenURI(tokenId: bigint | undefined) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'tokenURI',
     args: tokenId !== undefined ? [tokenId] : undefined,
     chainId,
@@ -175,7 +175,7 @@ export function useRoyaltyInfo(tokenId: bigint | undefined, salePrice: bigint) {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'royaltyInfo',
     args: tokenId !== undefined ? [tokenId, salePrice] : undefined,
     chainId,
@@ -188,7 +188,7 @@ export function usePlatformFeeBps() {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'platformFeeBps',
     chainId,
     query: { enabled: !!address },
@@ -200,7 +200,7 @@ export function usePlatformResaleBps() {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'platformResaleBps',
     chainId,
     query: { enabled: !!address },
@@ -212,7 +212,7 @@ export function useFeeRecipient() {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'feeRecipient',
     chainId,
     query: { enabled: !!address },
@@ -224,7 +224,7 @@ export function useContractOwner() {
   const address = getContractAddress(chainId) ?? undefined
   return useReadContract({
     address,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'owner',
     chainId,
     query: { enabled: !!address },

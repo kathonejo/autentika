@@ -4,9 +4,11 @@ Commissions and certificates of authenticity for artists, paid in USDC. Artists 
 
 Built with [Arc Studio](https://studio.arc.io)
 
+**Author:** Katherine Sánchez Carrasco (Kathonejo)
+
 ## Visual Design
 
-Print-studio / screen-print aesthetic with Kathonejo's brand palette: primary blue `#345DB4`, signature pink `#FAB6C1`, yellow `#FFE45C`, sky blue `#9ED8F5`, hot pink `#F06AA8`, green `#7CC66B`. Features include CSS radial-gradient halftone dot patterns in page corners and hero strip, cards framed with three nested concentric colored box-shadows (pink > yellow > sky), rotated sticker-style status badges, pill buttons with thick blue outline and yellow halo, a halftone-dot bunny SVG logo, Space Grotesk poster headings, and Inter body text.
+Print-studio / screen-print aesthetic with Kathonejo's brand palette: primary blue `#345DB4`, signature pink `#FAB6C1`, yellow `#FFE45C`, sky blue `#9ED8F5`, hot pink `#F06AA8`, green `#7CC66B`. Features include CSS radial-gradient halftone dot patterns in page corners and hero strip, cards framed with three nested concentric colored box-shadows (pink > yellow > sky), rotated sticker-style status badges, pill buttons with thick blue outline and yellow halo, a hand-drawn green bunny logo (mascota) with floating FAQ, Space Grotesk poster headings, and Inter body text.
 
 ## Tech Stack
 
@@ -37,7 +39,7 @@ Live app: https://autentika-app.vercel.app
 
 | Screen | URL |
 |---|---|
-| Feed (Pinterest-style certificates) | https://autentika-app.vercel.app/#/feed |
+| Feed (certificate gallery) | https://autentika-app.vercel.app/#/feed |
 | Artist directory | https://autentika-app.vercel.app/#/directorio |
 | Public artist profile + 280-char request | https://autentika-app.vercel.app/#/artista/<address> |
 | Individual work | https://autentika-app.vercel.app/#/obra/<tokenId> |
@@ -46,14 +48,14 @@ Live app: https://autentika-app.vercel.app
 | Tokenize / ERC-3643 help | https://autentika-app.vercel.app/#/tokenizar |
 | Admin (deploy Directory + Subscriptions) | https://autentika-app.vercel.app/#/admin |
 
-Companion contract **AutentikaDirectory** (artist registry, ≤280-byte commission requests, one-time physical redemption) is deployed by Katherine from Admin → Deploy AutentikaDirectory (signs in Rabby). Set `VITE_AUTENTIKA_DIRECTORY_ADDRESS` after deploy. Until then the feed/directory/profiles still work from AutentikaV2; request/redeem buttons degrade gracefully.
+Companion contract **AutentikaDirectory** (artist registry, ≤280-byte commission requests, one-time physical redemption) is deployed from Admin → Deploy AutentikaDirectory. Set `VITE_AUTENTIKA_DIRECTORY_ADDRESS` after deploy. Until then Directory actions show **Próximamente**; feed/profiles still work from AutentikaV2.
 
 Companion contract **AutentikaSubscriptions** (club de correo: overcollateral USDC deposits, monthly claims, **Plan anual: 12 meses, 10% de descuento**) is deployed from Admin → Deploy AutentikaSubscriptions. Set `VITE_AUTENTIKA_SUBSCRIPTIONS_ADDRESS` after deploy; UI degrades gracefully until then. Shipping address is off-chain.
 
-**Vista artista dashboard:** two-color donut (Asegurado = locked annual USDC vs Potencial = unlocked deposited balance) with total on top, legend beside, and a table of subscriptions (short address, fee, plan, months left, next claim). Until the companion is deployed the UI shows clearly labeled **example** data (`Ejemplo — se activa cuando se despliegue el contrato`).
+**Vista artista dashboard:** two-color donut (Asegurado = locked annual USDC vs Potencial = unlocked deposited balance) with total on top, legend beside, and a table of subscriptions (short address, fee, plan, months left, next claim). Until the companion is deployed the UI shows an empty / **Próximamente** state (no invented figures).
 
-| AutentikaDirectory | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
-| AutentikaSubscriptions | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
+| AutentikaDirectory | Arc Mainnet | *(Próximamente — deploy from /#/admin)* |
+| AutentikaSubscriptions | Arc Mainnet | *(Próximamente — deploy from /#/admin)* |
   
 Arc Studio project: https://studio.arc.io/app/1f88626c-4f19-4071-ba8c-b2671ea2fa56
 
@@ -86,7 +88,7 @@ bun run contracts:test    # forge test
 Honest product surface for Arc Microgrants demos:
 
 ### Feed of commissioned works
-Pinterest-style gallery of certificates already delivered on AutentikaV2. **Value:** discovery from finished work.
+Gallery of certificates already delivered on AutentikaV2. **Value:** discovery from finished work.
 
 ### Artist directory
 Artists register (AutentikaDirectory) with bio, base USDC price, and pitch. **Value:** clearer expectations before a commission.
@@ -111,7 +113,7 @@ Also: EN/ES; hash routes (`#/feed`, `#/directorio`, `#/encargos`, `#/suscripcion
 
 ## Live Arc Mainnet demo (2026-11-01)
 
-End-to-end AutentikaV2 commission **#1** for **0.10 USDC** (create → approve → fund → deliver → confirm → withdraw). Leftover demo funds returned to Katherine.
+End-to-end AutentikaV2 commission **#1** for **0.10 USDC** (create → approve → fund → deliver → confirm → withdraw). Leftover demo funds returned to the artist wallet.
 
 - **fundCommission:** https://explorer.arc.io/tx/0xf22f867b19156396415f8bf71c73d83224f78427e313bd68584b61818e1cf585
 - createCommission: https://explorer.arc.io/tx/0x6757df9726d2105c70eae6988b4d7add93147ca3580053d5e920d8d504ead503

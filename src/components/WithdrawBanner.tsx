@@ -1,7 +1,7 @@
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { toast } from 'sonner'
 import { formatAmount } from '@/onchain-money'
-import { KATHONEJO_ABI, isSupportedChain, getContractAddress, usdcAmount } from '@/contract'
+import { AUTENTIKA_V2_ABI, isSupportedChain, getContractAddress, usdcAmount } from '@/contract'
 import { useReadChainId } from '@/hooks/useCommissions'
 import type { Lang } from '@/i18n'
 import { translations } from '@/i18n'
@@ -16,7 +16,7 @@ export function WithdrawBanner({ lang }: Props) {
 
   const { data: rawPending, refetch } = useReadContract({
     address: contractAddr,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'pendingWithdrawals',
     args: address ? [address] : undefined,
     chainId: readChainId,
@@ -74,7 +74,7 @@ export function WithdrawBanner({ lang }: Props) {
       <button
         className="btn-primary"
         style={{ padding: '0.5rem 1.25rem', fontSize: '0.8rem' }}
-        onClick={() => contractAddr && writeContract({ address: contractAddr, abi: KATHONEJO_ABI, functionName: 'withdraw', args: [] })}
+        onClick={() => contractAddr && writeContract({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: 'withdraw', args: [] })}
         disabled={isPending || isConfirming}
       >
         {isPending || isConfirming ? '...' : t.withdrawAll}

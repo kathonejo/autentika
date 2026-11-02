@@ -311,7 +311,7 @@ body {
   margin: 0;
 }
 
-/* ── Pinterest-style masonry feed ───────────────────────────────────── */
+/* ── Masonry feed ───────────────────────────────────────────────────── */
 .masonry-feed {
   columns: 1;
   column-gap: 1rem;
@@ -363,4 +363,21 @@ body {
 }
 .masonry-meta {
   padding: 0.75rem 0.9rem 1rem;
+}
+
+/* ── Mascot FAQ (floating bunny) ─────────────────────────────────────── */
+.mascot-faq-root {
+  bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+}
+@media (max-width: 480px) {
+  .mascot-faq-root {
+    right: 12px !important;
+  }
+  .mascot-faq-panel {
+    width: min(360px, calc(100vw - 24px)) !important;
+  }
+  #mascot-faq-btn {
+    width: 56px !important;
+    height: 56px !important;
+  }
 }

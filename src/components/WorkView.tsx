@@ -1,7 +1,7 @@
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { toast } from 'sonner'
 import {
-  KATHONEJO_ABI,
+  AUTENTIKA_V2_ABI,
   getContractAddress,
   usdcAmount,
   explorerAddr,
@@ -58,7 +58,7 @@ export function WorkView({ lang, tokenId, onBack, onOpenArtist, onTokenizeHelp }
 
   const { data: certRaw, isLoading, isError } = useReadContract({
     address: autentika,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCertificateByTokenId',
     args: [tokenId],
     chainId,
@@ -68,7 +68,7 @@ export function WorkView({ lang, tokenId, onBack, onOpenArtist, onTokenizeHelp }
 
   const { data: commissionRaw } = useReadContract({
     address: autentika,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCommission',
     args: cert?.commissionId !== undefined ? [cert.commissionId] : undefined,
     chainId,
@@ -78,7 +78,7 @@ export function WorkView({ lang, tokenId, onBack, onOpenArtist, onTokenizeHelp }
 
   const { data: ownerRaw } = useReadContract({
     address: autentika,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'ownerOf',
     args: [tokenId],
     chainId,

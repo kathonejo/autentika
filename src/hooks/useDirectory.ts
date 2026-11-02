@@ -1,6 +1,6 @@
 import { useReadContract, useReadContracts } from 'wagmi'
 import { DIRECTORY_ABI, getDirectoryAddress } from '@/directory'
-import { KATHONEJO_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
+import { AUTENTIKA_V2_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
 import { useReadChainId } from '@/hooks/useCommissions'
 
 export function useDirectoryContractAddress() {
@@ -65,7 +65,7 @@ export function useFeedCertificates(maxTokens = 24) {
   const autentika = (isSupportedChain(chainId) ? getContractAddress(chainId) : getContractAddress(ARC_TESTNET_CHAIN_ID)) ?? undefined
   const contracts = Array.from({ length: maxTokens }, (_, i) => ({
     address: autentika as `0x${string}`,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCertificateByTokenId' as const,
     args: [BigInt(i + 1)] as const,
     chainId,

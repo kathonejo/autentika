@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain, useChainId } from 'wagmi'
 import { toast } from 'sonner'
 import { parseUsdc } from '@/onchain-money'
-import { KATHONEJO_ABI, isSupportedChain, getContractAddress, ARC_TESTNET_CHAIN_ID } from '@/contract'
+import { AUTENTIKA_V2_ABI, isSupportedChain, getContractAddress, ARC_TESTNET_CHAIN_ID } from '@/contract'
 import { useArtistProfile, castArtistProfile } from '@/hooks/useCommissions'
 import { useArtistListing, useDirectoryContractAddress } from '@/hooks/useDirectory'
 import { DIRECTORY_ABI, isDirectoryConfigured } from '@/directory'
@@ -153,7 +153,7 @@ function DirectoryRegisterCard({ lang, address }: { lang: Lang; address: `0x${st
   if (!isDirectoryConfigured()) {
     return (
       <div className="framed-card-sm" style={{ padding: '1rem 1.25rem', marginTop: '1.25rem' }}>
-        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>{t.directoryNotDeployed}</p>
+        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>{t.comingSoon}</p>
       </div>
     )
   }
@@ -215,7 +215,7 @@ function ProfileForm({ lang, profile, onSaved }: FormProps) {
     if (!contractAddr) return
     writeContract({
       address: contractAddr,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'setArtistProfile',
       args: [displayName, instagram, sealUrl, signatureUrl],
     })

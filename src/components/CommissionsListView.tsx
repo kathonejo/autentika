@@ -3,7 +3,7 @@ import { ConnectKitButton } from 'connectkit'
 import React, { useState, useCallback } from 'react'
 import { formatAmount } from '@/onchain-money'
 import {
-  KATHONEJO_ABI, CommissionStatus, usdcAmount,
+  AUTENTIKA_V2_ABI, CommissionStatus, usdcAmount,
   isSupportedChain, getContractAddress,
 } from '@/contract'
 import type { CommissionData } from '@/contract'
@@ -128,7 +128,7 @@ function DashboardView({ lang, t, onSelect, refreshKey: _refreshKey, onOpenSubsc
 
   const { data: artistIds } = useReadContract({
     address: contractAddr,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getArtistCommissions',
     args: address ? [address] : undefined,
     chainId: readChainId,
@@ -136,7 +136,7 @@ function DashboardView({ lang, t, onSelect, refreshKey: _refreshKey, onOpenSubsc
   })
   const { data: collectorIds } = useReadContract({
     address: contractAddr,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCollectorCommissions',
     args: address ? [address] : undefined,
     chainId: readChainId,
@@ -296,7 +296,7 @@ function SummaryCard({ tint, label, value }: { tint: string; label: string; valu
 function SummaryFetcher({ id, onLoaded, contractAddr, chainId }: { id: bigint; onLoaded: (c: CommissionData) => void; contractAddr: `0x${string}` | undefined; chainId: number }) {
   const { data } = useReadContract({
     address: contractAddr,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCommission',
     args: [id],
     chainId,

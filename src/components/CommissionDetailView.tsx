@@ -4,7 +4,7 @@ import { erc20Abi } from 'viem'
 import { toast } from 'sonner'
 import { formatAmount } from '@/onchain-money'
 import {
-  KATHONEJO_ABI, CommissionStatus, usdcAmount,
+  AUTENTIKA_V2_ABI, CommissionStatus, usdcAmount,
   isSupportedChain, getContractAddress, getUsdcAddress, getExplorerBase,
   ARC_TESTNET_CHAIN_ID,
 } from '@/contract'
@@ -110,7 +110,7 @@ export function CommissionDetailView({ lang, commissionId, onBack, onViewCert }:
 
   function call(fn: string, args: unknown[]) {
     if (!contractAddr) return
-    writeContract({ address: contractAddr, abi: KATHONEJO_ABI, functionName: fn, args: args })
+    writeContract({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: fn, args: args })
   }
   function fund()      { call('fundCommission', [commissionId]) }
   function confirm()   { call('confirmReceipt', [commissionId]) }
@@ -309,12 +309,12 @@ function MilestoneRow({ index, milestone, commissionId, isArtist, isCollector, s
 
   function completeMilestone() {
     if (!contractAddr) return
-    writeContract({ address: contractAddr, abi: KATHONEJO_ABI, functionName: 'completeMilestone', args: [commissionId, BigInt(index)] },
+    writeContract({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: 'completeMilestone', args: [commissionId, BigInt(index)] },
       { onSuccess: () => { toast.success(t.transactionConfirmed); onAction() }, onError: e => toast.error((e as Error).message.slice(0, 80)) })
   }
   function approveMilestone() {
     if (!contractAddr) return
-    writeContract({ address: contractAddr, abi: KATHONEJO_ABI, functionName: 'approveMilestone', args: [commissionId, BigInt(index)] },
+    writeContract({ address: contractAddr, abi: AUTENTIKA_V2_ABI, functionName: 'approveMilestone', args: [commissionId, BigInt(index)] },
       { onSuccess: () => { toast.success(t.transactionConfirmed); onAction() }, onError: e => toast.error((e as Error).message.slice(0, 80)) })
   }
 

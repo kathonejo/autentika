@@ -18,7 +18,7 @@ import {
   ANNUAL_MONTHS,
 } from '@/subscriptions'
 import { getUsdcAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
-import { ArtistSubsDashboard, EXAMPLE_ARTIST_SUBS } from '@/components/ArtistSubsDashboard'
+import { ArtistSubsDashboard } from '@/components/ArtistSubsDashboard'
 
 interface Props {
   lang: Lang
@@ -106,7 +106,7 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
 
   function ensureClub(): boolean {
     if (!club) {
-      toast.error(t.subNotDeployed)
+      toast.error(t.comingSoon)
       return false
     }
     return true
@@ -248,12 +248,6 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
         <hr className="rule-blue" style={{ marginTop: '0.75rem' }} />
       </div>
 
-      {!configured && (
-        <div className="framed-card" style={{ padding: '1rem', marginBottom: '1rem', color: 'var(--muted)', fontSize: '0.85rem' }}>
-          {t.subNotDeployed}
-        </div>
-      )}
-
       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
         {(['deposit', 'balance', 'artist'] as const).map(k => (
           <button
@@ -266,6 +260,12 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
           </button>
         ))}
       </div>
+
+      {!configured && (
+        <div style={{ marginBottom: '0.85rem' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '0.15rem 0.5rem', background: 'var(--yellow)', border: '1.5px solid var(--ink)' }}>{t.comingSoon}</span>
+        </div>
+      )}
 
       {(tab === 'deposit' || tab === 'balance') && (
         <div className="framed-card" style={{ padding: '1.25rem', marginBottom: '1rem' }}>
@@ -354,8 +354,8 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
           {/* Dashboard: live from events/views when club is deployed; example until then */}
           <ArtistSubsDashboard
             lang={lang}
-            rows={EXAMPLE_ARTIST_SUBS}
-            example={!configured}
+            rows={[]}
+            comingSoon={!configured}
           />
           <label className="field-label">{t.subPlanTitle}</label>
           <input className="field-input" value={planTitle} onChange={e => setPlanTitle(e.target.value)} style={{ width: '100%', marginBottom: '0.75rem' }} />

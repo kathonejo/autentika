@@ -1,7 +1,7 @@
 import { useReadContract } from 'wagmi'
 import { formatAmount } from '@/onchain-money'
 import {
-  KATHONEJO_ABI, CommissionStatus, usdcAmount,
+  AUTENTIKA_V2_ABI, CommissionStatus, usdcAmount,
   isSupportedChain, getContractAddress,
 } from '@/contract'
 import { castCommission, useReadChainId } from '@/hooks/useCommissions'
@@ -31,7 +31,7 @@ export function CommissionCard({ lang, commissionId, onClick }: Props) {
   const contractAddr = isSupportedChain(readChainId) ? getContractAddress(readChainId) ?? undefined : undefined
   const { data, isLoading } = useReadContract({
     address: contractAddr,
-    abi: KATHONEJO_ABI,
+    abi: AUTENTIKA_V2_ABI,
     functionName: 'getCommission',
     args: [commissionId],
     chainId: readChainId,

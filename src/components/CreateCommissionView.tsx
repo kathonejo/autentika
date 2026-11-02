@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { toast } from 'sonner'
 import { parseUsdc, formatUsdc } from '@/onchain-money'
-import { KATHONEJO_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
+import { AUTENTIKA_V2_ABI, getContractAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
 import { translations } from '@/i18n'
 import type { Lang } from '@/i18n'
 
@@ -75,7 +75,7 @@ export function CreateCommissionView({ lang, onCreated, onBack }: Props) {
 
     writeContract({
       address: contractAddr,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'createCommission',
       args: [
         collector as `0x${string}`,

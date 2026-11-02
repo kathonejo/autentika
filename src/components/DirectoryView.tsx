@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useReadContracts } from 'wagmi'
 import { useDirectoryArtists, useDirectoryContractAddress } from '@/hooks/useDirectory'
 import { DIRECTORY_ABI } from '@/directory'
-import { KATHONEJO_ABI, getContractAddress } from '@/contract'
+import { AUTENTIKA_V2_ABI, getContractAddress } from '@/contract'
 import { useReadChainId } from '@/hooks/useCommissions'
 import { usdcAmount } from '@/contract'
 import { translations } from '@/i18n'
@@ -32,7 +32,7 @@ export function DirectoryView({ lang, onOpenArtist, onBack }: Props) {
     },
     {
       address: autentika as `0x${string}`,
-      abi: KATHONEJO_ABI,
+      abi: AUTENTIKA_V2_ABI,
       functionName: 'getArtistProfile' as const,
       args: [a] as const,
       chainId,
@@ -72,8 +72,8 @@ export function DirectoryView({ lang, onOpenArtist, onBack }: Props) {
       <p style={{ fontSize: '0.875rem', color: 'var(--muted)', margin: '0.35rem 0 1.25rem' }}>{t.directorySubtitle}</p>
 
       {!dirAddr && (
-        <div className="framed-card" style={{ padding: '1.25rem', marginBottom: '1rem', background: 'var(--blue-light)' }}>
-          <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--blue)' }}>{t.directoryNotDeployed}</p>
+        <div style={{ marginBottom: '1rem' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '0.15rem 0.5rem', background: 'var(--yellow)', border: '1.5px solid var(--ink)' }}>{t.comingSoon}</span>
         </div>
       )}
 

@@ -16,6 +16,7 @@ import { PublicArtistView } from './components/PublicArtistView'
 import { WorkView } from './components/WorkView'
 import { TokenizeHelpView } from './components/TokenizeHelpView'
 import { HowItWorksView } from './components/HowItWorksView'
+import { MascotFaq } from './components/MascotFaq'
 import { SubscriptionsView } from './components/SubscriptionsView'
 import { parseHashView, hashForView, type HashView } from '@/lib/hashRoute'
 
@@ -206,6 +207,8 @@ export default function App() {
           />
         )}
       </main>
+
+      <MascotFaq lang={lang} />
 
       <footer style={{
         maxWidth: '72rem', margin: '0 auto', padding: '1.5rem 1rem 2.5rem',
