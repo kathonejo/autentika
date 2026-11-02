@@ -50,6 +50,8 @@ Companion contract **AutentikaDirectory** (artist registry, ≤280-byte commissi
 
 Companion contract **AutentikaSubscriptions** (club de correo: overcollateral USDC deposits, monthly claims, **Plan anual: 12 meses, 10% de descuento**) is deployed from Admin → Deploy AutentikaSubscriptions. Set `VITE_AUTENTIKA_SUBSCRIPTIONS_ADDRESS` after deploy; UI degrades gracefully until then. Shipping address is off-chain.
 
+**Vista artista dashboard:** two-color donut (Asegurado = locked annual USDC vs Potencial = unlocked deposited balance) with total on top, legend beside, and a table of subscriptions (short address, fee, plan, months left, next claim). Until the companion is deployed the UI shows clearly labeled **example** data (`Ejemplo — se activa cuando se despliegue el contrato`).
+
 | AutentikaDirectory | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
 | AutentikaSubscriptions | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
   

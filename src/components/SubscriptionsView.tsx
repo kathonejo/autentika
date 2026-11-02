@@ -18,6 +18,7 @@ import {
   ANNUAL_MONTHS,
 } from '@/subscriptions'
 import { getUsdcAddress, isSupportedChain, ARC_TESTNET_CHAIN_ID } from '@/contract'
+import { ArtistSubsDashboard, EXAMPLE_ARTIST_SUBS } from '@/components/ArtistSubsDashboard'
 
 interface Props {
   lang: Lang
@@ -103,7 +104,7 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
     }
   }
 
-  function ensureClub(): club is `0x${string}` {
+  function ensureClub(): boolean {
     if (!club) {
       toast.error(t.subNotDeployed)
       return false
@@ -350,6 +351,12 @@ export function SubscriptionsView({ lang, onBack, initialArtist }: Props) {
       {tab === 'artist' && (
         <div className="framed-card" style={{ padding: '1.25rem' }}>
           <h2 className="display" style={{ fontSize: '1.05rem', color: 'var(--blue)', margin: '0 0 0.75rem' }}>{t.subArtistPanelTitle}</h2>
+          {/* Dashboard: live from events/views when club is deployed; example until then */}
+          <ArtistSubsDashboard
+            lang={lang}
+            rows={EXAMPLE_ARTIST_SUBS}
+            example={!configured}
+          />
           <label className="field-label">{t.subPlanTitle}</label>
           <input className="field-input" value={planTitle} onChange={e => setPlanTitle(e.target.value)} style={{ width: '100%', marginBottom: '0.75rem' }} />
           <label className="field-label">{t.subPlanFee}</label>
