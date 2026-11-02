@@ -338,6 +338,13 @@ export function CertificateView({ lang, certId, onBack, onLegalizeHelp }: Props)
   )
 
   const creationDate = fmtDate(cert.creationDate, locale)
+  const paymentTxRaw = cert.paymentTxHash ? String(cert.paymentTxHash) : ''
+  const paymentTxExplorer =
+    paymentTxRaw &&
+    paymentTxRaw !== `0x${'0'.repeat(64)}` &&
+    !/^0x0+$/i.test(paymentTxRaw)
+      ? `${explorerBase}/tx/${paymentTxRaw}`
+      : null
   const releasedDate = fmtDate(cert.releasedAt, locale)
   const isOwner = address?.toLowerCase() === cert.currentOwner.toLowerCase()
   const allowance = (allowanceRaw) ?? 0n
@@ -530,6 +537,51 @@ export function CertificateView({ lang, certId, onBack, onLegalizeHelp }: Props)
               <p style={{ fontSize: '0.55rem', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, color: 'var(--blue)', marginTop: 2 }}>{t.issuedWith}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+
+      {/* Verified on blockchain */}
+      <div
+        className="framed-card-sm"
+        style={{
+          marginTop: '1.5rem',
+          padding: '1.15rem 1.35rem',
+          borderColor: 'var(--green)',
+          background: '#F0FAF0',
+        }}
+      >
+        <p style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontWeight: 800,
+          textTransform: 'uppercase',
+          fontSize: '0.65rem',
+          color: 'var(--green)',
+          letterSpacing: '0.08em',
+          margin: '0 0 0.45rem',
+        }}>{t.verifiedOnChainTitle}</p>
+        <p style={{ fontSize: '0.85rem', lineHeight: 1.65, color: 'var(--ink)', margin: '0 0 0.85rem' }}>
+          {t.verifiedOnChainBody}
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.8rem' }}>
+          {contractAddr && (
+            <a href={explorerAddr(contractAddr)} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)' }}>
+              {t.verifiedContract} →
+            </a>
+          )}
+          {tokenId !== undefined && tokenId > 0n && contractAddr && (
+            <a href={`${explorerBase}/token/${contractAddr}?a=${tokenId.toString()}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)' }}>
+              {t.verifiedToken} #{tokenId.toString()} →
+            </a>
+          )}
+          {paymentTxExplorer && (
+            <a href={paymentTxExplorer} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)' }}>
+              {t.verifiedPayment} →
+            </a>
+          )}
+          <a href={explorerBase} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--muted)', marginTop: '0.25rem' }}>
+            {t.verifiedOpenExplorer}
+          </a>
         </div>
       </div>
 

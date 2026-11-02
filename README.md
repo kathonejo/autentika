@@ -39,12 +39,13 @@ Live app: https://autentika-app.vercel.app
 |---|---|
 | Feed (Pinterest-style certificates) | https://autentika-app.vercel.app/#/feed |
 | Artist directory | https://autentika-app.vercel.app/#/directorio |
-| Public artist profile + 289-char request | https://autentika-app.vercel.app/#/artista/<address> |
+| Public artist profile + 280-char request | https://autentika-app.vercel.app/#/artista/<address> |
 | Individual work | https://autentika-app.vercel.app/#/obra/<tokenId> |
+| How it works / Why blockchain | https://autentika-app.vercel.app/#/como-funciona |
 | Tokenize / ERC-3643 help | https://autentika-app.vercel.app/#/tokenizar |
 | Admin (deploy AutentikaDirectory) | https://autentika-app.vercel.app/#/admin |
 
-Companion contract **AutentikaDirectory** (artist registry, ≤289-byte commission requests, one-time physical redemption) is deployed by Katherine from Admin → Deploy AutentikaDirectory (signs in Rabby). Set `VITE_AUTENTIKA_DIRECTORY_ADDRESS` after deploy. Until then the feed/directory/profiles still work from AutentikaV2; request/redeem buttons degrade gracefully.
+Companion contract **AutentikaDirectory** (artist registry, ≤280-byte commission requests, one-time physical redemption) is deployed by Katherine from Admin → Deploy AutentikaDirectory (signs in Rabby). Set `VITE_AUTENTIKA_DIRECTORY_ADDRESS` after deploy. Until then the feed/directory/profiles still work from AutentikaV2; request/redeem buttons degrade gracefully.
 
 | AutentikaDirectory | Arc Mainnet | *(pending Katherine deploy from /#/admin)* |
   
@@ -76,16 +77,56 @@ bun run contracts:test    # forge test
 
 ## Key Features
 
-- Any artist can create a commission specifying collector wallet, USDC amount, deadline, and title
-- Artists set a profile once: display name, Instagram handle, round seal/logo, signature image
-- Collector approves USDC and funds the escrow
-- Artist marks delivery with a full Certificate of Authenticity: artwork title, artist name, technique, dimensions, creation date, care instructions, photo URL + SHA-256 hash
-- Artist profile fields (seal, signature, Instagram) are snapshotted into the certificate at delivery time
-- Collector confirms receipt; USDC releases to artist via pull-withdrawal pattern
-- Auto-claim: artist can claim 14 days after delivery if collector is unresponsive
-- Refund: collector can refund after the delivery deadline passes (if still in Funded state)
-- Cancel: either party can cancel before funding
-- Certificates are transferable — each transfer appends owner and resale price to the provenance chain
-- Certificate page: landscape sheet with photo band, round seal, signature, "Issued with Autentika" footer, and Download PDF button
-- Shareable deep-links: `/?commission=<id>` and `/?cert=<certId>`
-- EN/ES language toggle in the header
+Each item below says what it does and why it matters for artists and collectors.
+
+### Feed of commissioned works
+A Pinterest-style gallery of certificates already delivered on AutentikaV2. Collectors browse real finished art, open a piece, and from there reach the artist. **Value:** discovery based on completed work, not cold DMs.
+
+### Artist directory
+Artists register once (via AutentikaDirectory) with a short bio, base price in USDC, and terms. Collectors see prices and past commissions in one place. **Value:** clearer expectations and less friction to start a commission.
+
+### Artist profile + share link + 280-character request
+Each artist has a public link (`#/artista/0x…`). Collectors open it and write what they want in up to **280 characters** (live counter; on-chain byte limit). The request is recorded on-chain. **Value:** shareable storefront; the brief does not get lost in chat.
+
+### Individual work page
+Every certificate opens as its own page (`#/obra/<tokenId>`): photo, title, technique, and a path to commission the same artist again — plus an on-chain verification block. **Value:** a clean public page for each piece.
+
+### Escrow commissions with milestones
+USDC sits in AutentikaV2 until delivery is confirmed. Optional milestones release payment in stages. **Value:** artists get paid safely; collectors know funds are locked for the work.
+
+### Certificate NFT (ERC-721)
+When the collector confirms, Autentika mints a unique NFT certificate with photo, hash, technique, dimensions, and provenance. **Value:** portable proof of the commission that travels with the work.
+
+### Resale royalties (ERC-2981)
+Artists keep earning when the certificate changes hands on marketplaces that respect ERC-2981. **Value:** ongoing upside for the creator after the first sale.
+
+### Legalization
+Optionally attach a legal document hash to the certificate so a notarial or legal record points at the same on-chain piece. **Value:** bridges traditional paperwork and the chain record.
+
+### Tokenization & ERC-3643 note
+The certificate is already an ERC-721 NFT. ERC-3643 (T-REX) is for permissioned security tokens with KYC — not a natural fit for unique art. Autentika does **not** claim ERC-3643 compliance; a later wrap or fractionalization would be a separate step. **Value:** honest framing so collectors are not misled.
+
+### Physical artwork, redeemable once
+The artist can mark that the NFT accompanies a physical piece. Only the current NFT holder can redeem it, and only once; then the artist marks it shipped (AutentikaDirectory). **Value:** digital certificate and physical delivery stay linked without double-claims.
+
+### Why blockchain? Public verifiability
+Anyone can open the [Arc explorer](https://explorer.arc.io/address/0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4) and verify — **without trusting Autentika** — who made the work, when it was commissioned, who paid in USDC, and the ownership history. That proof cannot be erased or forged. It raises the value and trust of the work, and protects artists against copies. In the app: **Cómo funciona** (`#/como-funciona`) and a **Verificado en blockchain** block on each work/certificate page with explorer links (contract, NFT token, payment tx when available).
+
+Also: artists set a profile once (name, Instagram, seal, signature); collectors fund escrow; delivery snapshots the CoA; auto-claim after 14 days; refund after deadline; cancel before funding; transferable certificates with provenance; PDF download; EN/ES toggle; shareable `#/encargo/<id>` and `#/cert/<certId>` links.
+
+## Cómo funciona (ES)
+
+Autentika conecta artistas y coleccionistas con encargos en USDC en escrow sobre Arc. Cada obra terminada deja un rastro público y permanente en blockchain.
+
+- **Feed:** galería de obras ya entregadas; el coleccionista descubre arte real y llega al artista.
+- **Directorio:** artistas con bio, precio base y condiciones; menos fricción para encargar.
+- **Perfil + link + pedido de 280 caracteres:** vitrina pública; el pedido queda on-chain.
+- **Página de obra:** ficha pública de cada certificado, con verificación en el explorador.
+- **Escrow e hitos:** el USDC queda trabado hasta la entrega (o se libera por etapas).
+- **Certificado NFT:** prueba única de autenticidad y procedencia.
+- **Regalías en reventa:** el artista sigue cobrando cuando la pieza cambia de manos.
+- **Legalización:** hash de un documento legal apuntando a la misma pieza.
+- **Tokenización / ERC-3643:** el certificado ya es ERC-721; ERC-3643 es para security tokens con KYC — Autentika no afirma ese cumplimiento.
+- **Obra física redimible una vez:** solo el titular del NFT puede reclamarla, una sola vez.
+
+**¿Por qué blockchain?** Cualquiera puede chequear en el explorador de Arc — sin confiar en Autentika — quién hizo la obra, cuándo, quién pagó en USDC y el historial de dueños. Esa prueba no se borra ni se falsifica: sube el valor y la confianza, y protege al artista frente a copias.

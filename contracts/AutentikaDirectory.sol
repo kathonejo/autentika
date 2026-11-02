@@ -48,10 +48,10 @@ interface IAutentikaV2Views {
 
 /// @title AutentikaDirectory
 /// @notice Companion to AutentikaV2: public artist registry, commission requests
-///         (max 289 bytes), and one-time physical-artwork redemption tied to
+///         (max 280 bytes), and one-time physical-artwork redemption tied to
 ///         Autentika certificate NFTs. Does not modify AutentikaV2.
 contract AutentikaDirectory is ReentrancyGuard {
-    uint256 public constant MAX_REQUEST_BYTES = 289;
+    uint256 public constant MAX_REQUEST_BYTES = 280;
 
     IAutentikaV2Views public immutable autentika;
 
@@ -161,9 +161,9 @@ contract AutentikaDirectory is ReentrancyGuard {
         return _listings[artist].registered;
     }
 
-    // ─── Commission requests (289-byte pitch box) ───────────────────────────
+    // ─── Commission requests (280-byte pitch box) ───────────────────────────
 
-    /// @notice Collector asks a registered artist for a commission. Message ≤ 289 bytes.
+    /// @notice Collector asks a registered artist for a commission. Message ≤ 280 bytes.
     function requestCommission(address artist, string calldata message) external nonReentrant returns (uint256 id) {
         if (artist == address(0)) revert InvalidAddress();
         if (!_listings[artist].registered) revert NotRegistered();

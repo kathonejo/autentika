@@ -6,7 +6,7 @@ import { AUTENTIKA_DIRECTORY_ABI } from '@/deploy/autentikaDirectoryAbi'
 import type { SupportedChainId } from '@/contract'
 
 export const DIRECTORY_ABI = AUTENTIKA_DIRECTORY_ABI
-export const MAX_REQUEST_CHARS = 289
+export const MAX_REQUEST_CHARS = 280
 export const DIRECTORY_LS_KEY = 'autentika.directory.address'
 
 function readEnvDirectory(): `0x${string}` | null {

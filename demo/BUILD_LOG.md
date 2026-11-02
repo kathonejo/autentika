@@ -40,8 +40,13 @@ All times America/Buenos_Aires (UTC-3).
 - Wired live app: VITE_AUTENTIKA_MAINNET_ADDRESS on autentika-app (production), src/contract.ts + README updated to mainnet.
 
 ## 2026-11-01 — Marketplace: feed, directory, requests, physical, tokenize help
-- Companion contract AutentikaDirectory.sol (Foundry, 13/13 tests): artist registry (bio, base USDC price, pitch), on-chain commission requests capped at 289 bytes, physical-artwork flag per commission, redeemPhysical once by current ERC-721 owner, markShipped by artist. References live AutentikaV2; does not modify V2.
-- App: hash routes `#/feed` (masonry of certificates), `#/directorio`, `#/artista/0x…` (share link + 289-char request box with counter), `#/obra/n` (work → artist + physical redeem), `#/tokenizar` (honest ERC-721 vs ERC-3643/T-REX explanation — no overclaim).
+- Companion contract AutentikaDirectory.sol (Foundry, 13/13 tests): artist registry (bio, base USDC price, pitch), on-chain commission requests capped at 280 bytes, physical-artwork flag per commission, redeemPhysical once by current ERC-721 owner, markShipped by artist. References live AutentikaV2; does not modify V2.
+- App: hash routes `#/feed` (masonry of certificates), `#/directorio`, `#/artista/0x…` (share link + 280-char request box with counter), `#/obra/n` (work → artist + physical redeem), `#/tokenizar` (honest ERC-721 vs ERC-3643/T-REX explanation — no overclaim).
 - Admin: second Deploy button for AutentikaDirectory (Katherine signs in Rabby); address saved to localStorage / `VITE_AUTENTIKA_DIRECTORY_ADDRESS`. Graceful degrade until deployed.
 - Artist profile: shareable `#/artista/<wallet>` link + directory registration form.
 - Commission detail: artist can set physical-accompanies-NFT flag once Directory is live.
+
+## 2026-11-01 — Explanations + 280-char limit + on-chain verification UX
+- AutentikaDirectory MAX_REQUEST_BYTES changed to 280 (not yet deployed; admin bytecode regenerated). Tests, UI counter/copy, README, BUILD_LOG updated.
+- New `#/como-funciona` page: plain-language feature guide + “why blockchain” (public verifiability on Arc explorer).
+- Work page: “Verified on blockchain” block with explorer links (contract, NFT token, payment tx when present).

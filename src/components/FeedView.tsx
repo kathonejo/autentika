@@ -7,6 +7,7 @@ interface Props {
   lang: Lang
   onOpenWork: (tokenId: bigint) => void
   onOpenDirectory: () => void
+  onOpenHowItWorks?: () => void
 }
 
 type CertLike = {
@@ -18,7 +19,7 @@ type CertLike = {
   commissionId?: bigint
 }
 
-export function FeedView({ lang, onOpenWork, onOpenDirectory }: Props) {
+export function FeedView({ lang, onOpenWork, onOpenDirectory, onOpenHowItWorks }: Props) {
   const t = translations[lang]
   const { data, isLoading } = useFeedCertificates(32)
 
@@ -50,9 +51,16 @@ export function FeedView({ lang, onOpenWork, onOpenDirectory }: Props) {
             {t.feedSubtitle}
           </p>
         </div>
-        <button className="btn-outline" onClick={onOpenDirectory} style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}>
-          {t.navDirectory}
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          {onOpenHowItWorks && (
+            <button className="btn-outline" onClick={onOpenHowItWorks} style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}>
+              {t.navHowItWorks}
+            </button>
+          )}
+          <button className="btn-outline" onClick={onOpenDirectory} style={{ fontSize: '0.8rem', padding: '0.4rem 0.9rem' }}>
+            {t.navDirectory}
+          </button>
+        </div>
       </div>
 
       {isLoading && (

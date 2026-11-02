@@ -1,6 +1,14 @@
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { toast } from 'sonner'
-import { KATHONEJO_ABI, getContractAddress, usdcAmount } from '@/contract'
+import {
+  KATHONEJO_ABI,
+  getContractAddress,
+  usdcAmount,
+  explorerAddr,
+  explorerTx,
+  ARC_MAINNET_CHAIN_ID,
+  getExplorerBase,
+} from '@/contract'
 import { useReadChainId } from '@/hooks/useCommissions'
 import { usePhysicalByCommission, useDirectoryContractAddress } from '@/hooks/useDirectory'
 import { DIRECTORY_ABI, isDirectoryConfigured } from '@/directory'
@@ -26,6 +34,18 @@ type Cert = {
   collector: string
   currentOwner: string
   id: string
+  paymentTxHash?: string
+}
+
+const ZERO_HASH = '0x' + '0'.repeat(64)
+
+function normalizeTxHash(raw: unknown): string | null {
+  if (raw == null) return null
+  let hex = typeof raw === 'string' ? raw : `0x${BigInt(raw as bigint).toString(16).padStart(64, '0')}`
+  if (!hex.startsWith('0x')) hex = `0x${hex}`
+  if (hex.toLowerCase() === ZERO_HASH) return null
+  if (/^0x0+$/i.test(hex)) return null
+  return hex
 }
 
 export function WorkView({ lang, tokenId, onBack, onOpenArtist, onTokenizeHelp }: Props) {
@@ -34,6 +54,7 @@ export function WorkView({ lang, tokenId, onBack, onOpenArtist, onTokenizeHelp }
   const chainId = useReadChainId()
   const autentika = getContractAddress(chainId) ?? undefined
   const dirAddr = useDirectoryContractAddress()
+  const explorerBase = getExplorerBase(chainId)
 
   const { data: certRaw, isLoading, isError } = useReadContract({
     address: autentika,
@@ -114,6 +135,13 @@ export function WorkView({ lang, tokenId, onBack, onOpenArtist, onTokenizeHelp }
 
   const isOwner = !!address && !!owner && address.toLowerCase() === owner.toLowerCase()
   const isArtist = !!address && !!artistAddr && address.toLowerCase() === artistAddr.toLowerCase()
+  const paymentTx = normalizeTxHash(cert.paymentTxHash)
+  const contractLink = autentika
+    ? explorerAddr(autentika, chainId)
+    : explorerAddr('0xEeD7B7a048bcdd43801c644F75FdF84bee3bd7D4', ARC_MAINNET_CHAIN_ID)
+  const tokenLink = autentika
+    ? `${explorerBase}/token/${autentika}?a=${tokenId.toString()}`
+    : '#'
 
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '1.5rem 1rem' }}>
@@ -139,6 +167,49 @@ export function WorkView({ lang, tokenId, onBack, onOpenArtist, onTokenizeHelp }
           <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: 'var(--muted)' }}>
             {t.amountPaid}: {usdcAmount(cert.amountPaid, chainId).toString()} USDC · Token #{tokenId.toString()}
           </p>
+        </div>
+      </div>
+
+      <div
+        className="framed-card"
+        style={{
+          padding: '1.15rem 1.35rem',
+          marginBottom: '1rem',
+          borderColor: 'var(--green)',
+          background: '#F0FAF0',
+        }}
+      >
+        <p
+          style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 800,
+            textTransform: 'uppercase',
+            fontSize: '0.65rem',
+            color: 'var(--green)',
+            letterSpacing: '0.08em',
+            margin: '0 0 0.45rem',
+          }}
+        >
+          {t.verifiedOnChainTitle}
+        </p>
+        <p style={{ fontSize: '0.85rem', lineHeight: 1.65, color: 'var(--ink)', margin: '0 0 0.85rem' }}>
+          {t.verifiedOnChainBody}
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.8rem' }}>
+          <a href={contractLink} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)' }}>
+            {t.verifiedContract} →
+          </a>
+          <a href={tokenLink} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)' }}>
+            {t.verifiedToken} #{tokenId.toString()} →
+          </a>
+          {paymentTx && (
+            <a href={explorerTx(paymentTx, chainId)} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)' }}>
+              {t.verifiedPayment} →
+            </a>
+          )}
+          <a href={explorerBase} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--muted)', marginTop: '0.25rem' }}>
+            {t.verifiedOpenExplorer}
+          </a>
         </div>
       </div>
 

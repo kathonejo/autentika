@@ -9,6 +9,7 @@ export type HashView =
   | { name: 'admin' }
   | { name: 'legalize-help' }
   | { name: 'tokenize-help' }
+  | { name: 'how-it-works' }
   | { name: 'detail'; id: bigint }
   | { name: 'cert'; certId: string }
   | { name: 'artist'; address: `0x${string}` }
@@ -30,6 +31,8 @@ export function parseHashView(): HashView {
     if (head === 'admin') return { name: 'admin' }
     if (head === 'legalizar' || head === 'legalize-help') return { name: 'legalize-help' }
     if (head === 'tokenizar' || head === 'tokenize-help') return { name: 'tokenize-help' }
+    if (head === 'como-funciona' || head === 'how-it-works' || head === 'por-que-blockchain' || head === 'why-blockchain')
+      return { name: 'how-it-works' }
     if ((head === 'artista' || head === 'artist') && parts[1] && ADDR_RE.test(parts[1])) {
       return { name: 'artist', address: parts[1] as `0x${string}` }
     }
@@ -67,6 +70,7 @@ export function hashForView(view: HashView): string {
     case 'admin': return '#/admin'
     case 'legalize-help': return '#/legalizar'
     case 'tokenize-help': return '#/tokenizar'
+    case 'how-it-works': return '#/como-funciona'
     case 'detail': return `#/encargo/${view.id.toString()}`
     case 'cert': return `#/cert/${view.certId}`
     case 'artist': return `#/artista/${view.address}`

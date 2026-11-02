@@ -116,17 +116,17 @@ contract AutentikaDirectoryTest is Test {
         assertEq(directory.getRequestsFromCollector(collector).length, 1);
     }
 
-    function test_requestCommission_max289() public {
+    function test_requestCommission_max280() public {
         vm.prank(artist);
         directory.registerArtist("Bio", 1, "x");
 
-        bytes memory ok = new bytes(289);
-        for (uint256 i; i < 289; ++i) ok[i] = "a";
+        bytes memory ok = new bytes(280);
+        for (uint256 i; i < 280; ++i) ok[i] = "a";
         vm.prank(collector);
         directory.requestCommission(artist, string(ok));
 
-        bytes memory tooLong = new bytes(290);
-        for (uint256 i; i < 290; ++i) tooLong[i] = "b";
+        bytes memory tooLong = new bytes(281);
+        for (uint256 i; i < 281; ++i) tooLong[i] = "b";
         vm.prank(collector);
         vm.expectRevert(AutentikaDirectory.MessageTooLong.selector);
         directory.requestCommission(artist, string(tooLong));
@@ -234,7 +234,7 @@ contract AutentikaDirectoryTest is Test {
             vm.prank(collector);
             vm.expectRevert(AutentikaDirectory.EmptyString.selector);
             directory.requestCommission(artist, string(msgBytes));
-        } else if (len > 289) {
+        } else if (len > 280) {
             // fuzz uint8 max is 255, so this branch won't hit 290+; keep for clarity
             vm.prank(collector);
             vm.expectRevert(AutentikaDirectory.MessageTooLong.selector);

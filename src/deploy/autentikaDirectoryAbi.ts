@@ -1,4 +1,3 @@
-/** AutentikaDirectory ABI (forge build). */
 export const AUTENTIKA_DIRECTORY_ABI = [
   {
     "type": "constructor",

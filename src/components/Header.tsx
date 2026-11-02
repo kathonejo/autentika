@@ -14,7 +14,7 @@ interface HeaderProps {
   onToggleMenu: () => void
 }
 
-const NAV_ITEMS = ['feed', 'directory', 'commissions', 'create', 'profile', 'tokenize-help', 'admin'] as const
+const NAV_ITEMS = ['feed', 'directory', 'how-it-works', 'commissions', 'create', 'profile', 'tokenize-help', 'admin'] as const
 type NavItem = typeof NAV_ITEMS[number]
 
 function navLabel(item: NavItem, t: typeof translations[Lang]) {
@@ -23,6 +23,7 @@ function navLabel(item: NavItem, t: typeof translations[Lang]) {
   if (item === 'commissions') return t.myCommissions
   if (item === 'create') return t.newCommission
   if (item === 'profile') return t.artistProfile
+  if (item === 'how-it-works') return t.navHowItWorks
   if (item === 'tokenize-help') return t.navTokenize
   return t.admin
 }
