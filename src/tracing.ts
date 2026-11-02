@@ -480,19 +480,18 @@ try {
     patchProvider(existingProvider);
   }
 
-  // Case 2: provider set later (wallet extensions inject asynchronously)
-  let _eth: EIP1193Provider | undefined = existingProvider;
-  Object.defineProperty(window, 'ethereum', {
-    configurable: true,
-    enumerable: true,
-    get() { return _eth; },
-    set(v: EIP1193Provider | undefined) {
-      _eth = v;
-      patchProvider(v);
-    },
-  });
+  // Case 2: wallet extensions inject asynchronously.
+  // Do NOT redefine window.ethereum with a getter/setter — that races with
+  // Rabby/MetaMask injection (often non-configurable) and can break connect.
+  const onEthereumInitialized = () => patchProvider(getEthereum());
+  window.addEventListener('ethereum#initialized', onEthereumInitialized, { once: true });
+  let polls = 0;
+  const poll = window.setInterval(() => {
+    patchProvider(getEthereum());
+    if (++polls >= 40) window.clearInterval(poll); // ~10s
+  }, 250);
 
-  // Case 3: EIP-6963 multi-provider discovery
+  // Case 3: EIP-6963 multi-provider discovery (Rabby, MM, etc.)
   window.addEventListener('eip6963:announceProvider', ((e: EIP6963AnnounceProviderEvent) => {
     patchProvider(e?.detail?.provider);
   }));

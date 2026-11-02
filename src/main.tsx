@@ -72,7 +72,12 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>
+        <ConnectKitProvider
+          // 0 = do not pass chainId into connect(). Default would be chains[0]=Arc(5042);
+          // if Rabby/MM cannot switch/add Arc yet, wagmi aborts the whole connect and
+          // the button stays on "Connect Wallet". Switch/add happens after connect.
+          options={{ initialChainId: 0 }}
+        >
           <App />
           <StudioWatermark />
           <Toaster position="top-center" />
