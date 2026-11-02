@@ -61,7 +61,7 @@ export function Header({ lang, onToggleLang, currentView, onNavigate, menuOpen, 
           height: '56px',
         }}>
           <button
-            onClick={() => onNavigate('feed')}
+            onClick={() => onNavigate('landing')}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               background: 'none', border: 'none', cursor: 'pointer', padding: 0,

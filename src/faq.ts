@@ -61,7 +61,7 @@ export const faqCopy: Record<
       },
       {
         q: '¿Cómo paso USDC a pesos u otra moneda?',
-        a: 'Podés usar un exchange que soporte Arc (por ejemplo OKX, si lo ofrece) o puenteá USDC a Base con bridge.usdc.com y desde ahí lo cambiás en el exchange o billetera que uses.',
+        a: 'Podés usar un exchange que soporte Arc (como OKX, si lo ofrece) o puenteá USDC a Base con bridge.usdc.com y desde ahí lo cambiás en el exchange o billetera que uses.',
       },
       {
         q: '¿Autentika cobra algo?',

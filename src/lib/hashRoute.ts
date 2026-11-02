@@ -1,6 +1,7 @@
 /** Hash-based routes so share links work on Vercel static hosting. */
 
 export type HashView =
+  | { name: 'landing' }
   | { name: 'feed' }
   | { name: 'directory' }
   | { name: 'commissions' }
@@ -24,7 +25,8 @@ export function parseHashView(): HashView {
   if (hash) {
     const parts = hash.split('/')
     const head = parts[0]?.toLowerCase()
-    if (head === 'feed' || head === '') return { name: 'feed' }
+    if (head === '' || head === 'inicio' || head === 'home' || head === 'landing') return { name: 'landing' }
+    if (head === 'feed') return { name: 'feed' }
     if (head === 'directorio' || head === 'directory') return { name: 'directory' }
     if (head === 'encargos' || head === 'commissions') return { name: 'commissions' }
     if (head === 'crear' || head === 'create') return { name: 'create' }
@@ -62,11 +64,12 @@ export function parseHashView(): HashView {
       if (id > 0n) return { name: 'detail', id }
     } catch { /* ignore */ }
   }
-  return { name: 'feed' }
+  return { name: 'landing' }
 }
 
 export function hashForView(view: HashView): string {
   switch (view.name) {
+    case 'landing': return '#/'
     case 'feed': return '#/feed'
     case 'directory': return '#/directorio'
     case 'commissions': return '#/encargos'

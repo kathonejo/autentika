@@ -18,6 +18,7 @@ import { TokenizeHelpView } from './components/TokenizeHelpView'
 import { HowItWorksView } from './components/HowItWorksView'
 import { MascotFaq } from './components/MascotFaq'
 import { SubscriptionsView } from './components/SubscriptionsView'
+import { LandingView } from './components/LandingView'
 import { parseHashView, hashForView, type HashView } from '@/lib/hashRoute'
 
 export type View = HashView
@@ -53,7 +54,8 @@ export default function App() {
   }, [])
 
   function navigate(name: string) {
-    if (name === 'feed') go({ name: 'feed' })
+    if (name === 'landing' || name === 'home') go({ name: 'landing' })
+    else if (name === 'feed') go({ name: 'feed' })
     else if (name === 'directory') go({ name: 'directory' })
     else if (name === 'create') go({ name: 'create' })
     else if (name === 'profile') go({ name: 'profile' })
@@ -62,7 +64,7 @@ export default function App() {
     else if (name === 'how-it-works') go({ name: 'how-it-works' })
     else if (name === 'subscriptions') go({ name: 'subscriptions' })
     else if (name === 'commissions') go({ name: 'commissions' })
-    else go({ name: 'feed' })
+    else go({ name: 'landing' })
   }
 
   const currentViewName =
@@ -89,6 +91,15 @@ export default function App() {
       <WithdrawBanner lang={lang} />
 
       <main style={{ paddingBottom: '5rem' }}>
+        {view.name === 'landing' && (
+          <LandingView
+            lang={lang}
+            onOpenComisiones={() => go({ name: 'feed' })}
+            onOpenMailClubs={() => go({ name: 'subscriptions' })}
+            onOpenDirectory={() => go({ name: 'directory' })}
+          />
+        )}
+
         {view.name === 'feed' && (
           <FeedView
             lang={lang}
